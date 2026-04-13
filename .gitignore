@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+.env
+transport-app/node_modules/
+transport-app/dist/
+transport-app/server/node_modules/
+transport-app/.env

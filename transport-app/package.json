@@ -1,0 +1,84 @@
+{
+  "name": "transport-app",
+  "version": "1.0.5",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "admin": "electron ./admin-app/admin-main.js",
+    "build:win": "electron-builder --win --x64",
+    "build:win-fast": "electron-packager . TransportApp --platform=win32 --arch=x64 --out=dist --overwrite",
+    "build:mac": "electron-builder --mac --x64",
+    "package:mac": "electron-packager . TransportApp --platform=darwin --arch=arm64,x64 --out=dist --overwrite",
+    "package:all": "electron-packager . TransportApp --platform=all --arch=all --out=dist --overwrite"
+  },
+  "build": {
+    "appId": "com.dhillonroadlines.transport",
+    "productName": "DHILLON ROADLINES TMS",
+    "artifactName": "tms-setup.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "renderer/**",
+      ".env",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.business",
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "DHILLON ROADLINES TMS",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Prathamsharma2",
+        "repo": "Transport-app"
+      }
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "electron-updater": "^6.8.3"
+  },
+  "devDependencies": {
+    "electron": "^41.0.3",
+    "electron-builder": "^26.8.1",
+    "electron-packager": "^17.1.2"
+  }
+}

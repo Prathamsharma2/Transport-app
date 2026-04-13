@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOGM Book - Ledger System</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --border-color: #e5e7eb;
+            --header-bg: #f9fafb;
+            
+            /* Column Colors from Image */
+            --c-red: #ef4444;       /* DATE, GR, BOX, BAL, SUR, SHORTAGE */
+            --c-green: #22c55e;     /* TRUCK NO, WEIGHT, PAYMENT */
+            --c-black: #000000;     /* STATION */
+            --c-cyan: #06b6d4;      /* FRIGHT (looked blue/cyan in image, maybe closer to #0ea5e9 or #3b82f6) */
+            --c-purple: #9333ea;    /* FROM TO */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .actions button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);
+        }
+
+        .actions button:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .table-header-title {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(249, 250, 251, 0.5);
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        th {
+            background-color: var(--header-bg);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Specific Header Colors based on the Excel screenshot */
+        th.col-date { color: var(--c-red); }
+        th.col-truck { color: var(--c-green); }
+        th.col-station { color: var(--c-black); }
+        th.col-gr { color: var(--c-red); }
+        th.col-weight { color: var(--c-green); }
+        th.col-fright { color: var(--c-cyan); }
+        th.col-payment { color: var(--c-green); }
+        th.col-box { color: var(--c-red); }
+        th.col-fromto { color: var(--c-purple); }
+        th.col-bal { color: var(--c-red); }
+        th.col-sur { color: var(--c-red); }
+        th.col-shortage { color: var(--c-red); }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        /* Data cell styles if needed to match header styling or general readability */
+        td {
+            color: var(--text-secondary);
+        }
+        
+        .loading {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .total-row {
+            background-color: #f8fafc;
+            font-weight: 700;
+        }
+        .total-row td {
+            border-top: 2px solid var(--border-color);
+        }
+        .total-fright { color: var(--c-purple); }
+        .total-payment { color: var(--c-red); }
+        .total-bal { color: var(--c-green); }
+        .total-shortage { color: var(--c-red); }
+
+        .spinner {
+            border: 3px solid rgba(0,0,0,0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4f46e5;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .summary-block {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            background: #fdfdfd;
+        }
+        .summary-item {
+            text-align: right;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <div class="header">
+            <h1>KOGM Book - March 2026</h1>
+            <div class="actions">
+                <button id="seedBtn" onclick="seedDatabase()">Initialize / Reset Data</button>
+                <button onclick="fetchLedger()">Refresh</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header-title">KOGM Month Of March 2026</div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-date">DATE</th>
+                            <th class="col-truck">TRUCK NO</th>
+                            <th class="col-station">STATION</th>
+                            <th class="col-gr">GR</th>
+                            <th class="col-weight">WEIGHT</th>
+                            <th class="col-fright">FRIGHT</th>
+                            <th class="col-payment">PAYMENT</th>
+                            <th class="col-box">BOX</th>
+                            <th class="col-fromto">FROM TO</th>
+                            <th class="col-bal">BAL</th>
+                            <th class="col-sur">SUR</th>
+                            <th class="col-shortage">SHORTAGE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerBody">
+                        <tr>
+                            <td colspan="12" class="loading">
+                                <div class="spinner"></div>
+                                Loading Ledger Data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="summary-block" id="summaryBlock" style="display: none;">
+                <!-- To exactly match the bottom of the Excel sheet -->
+                <div class="summary-item">TOTAL FRIGHT</div>
+                <div class="summary-item total-fright" id="tFright">2224402</div>
+                
+                <div class="summary-item">TOTAL PAYMENT RECIEVED KOGM</div>
+                <div class="summary-item total-payment" id="tPayment">2061291</div>
+                
+                <div class="summary-item">TOTAL PAYMENT BALACE</div>
+                <div class="summary-item total-bal" id="tBal">1418783</div>
+                
+                <div class="summary-item">RECIVED AFTER  SUBRACT</div>
+                <div class="summary-item total-shortage" id="tSub">1255672</div>
+                
+                <div class="summary-item">BAL FROM KOGM PENDING</div>
+                <div class="summary-item" style="color: red;" id="tPend">163111</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:4000/api';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchLedger();
+        });
+
+        async function fetchLedger() {
+            try {
+                const response = await fetch(`${API_BASE}/ledger`);
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.data.length === 0) {
+                        // Automatically seed if empty
+                        await seedDatabase();
+                    } else {
+                        renderTable(result.data);
+                    }
+                } else {
+                    alert('Failed to load ledger data');
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('ledgerBody').innerHTML = `
+                    <tr><td colspan="12" style="text-align: center; color: red; padding: 2rem;">
+                        <b>Connection Error:</b> Cannot connect to backend server. Make sure it is running.
+                    </td></tr>
+                `;
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('ledgerBody');
+            tbody.innerHTML = '';
+            
+            let html = '';
+            // Data matches Excel screenshot structure
+            data.forEach(row => {
+                html += `
+                    <tr>
+                        <td>${row.date || ''}</td>
+                        <td>${row.truck_no || ''}</td>
+                        <td>${row.station || ''}</td>
+                        <td>${row.gr || ''}</td>
+                        <td>${row.weight || ''}</td>
+                        <td>${row.fright || ''}</td>
+                        <td>${row.payment || ''}</td>
+                        <td>${row.box || ''}</td>
+                        <td>${row.from_to || ''}</td>
+                        <td>${row.bal || ''}</td>
+                        <td>${row.sur || ''}</td>
+                        <td>${row.shortage || ''}</td>
+                    </tr>
+                `;
+            });
+            
+            // Add totals row based on screenshot data logic if all missing values are treated
+            html += `
+                <tr class="total-row">
+                    <td colspan="5"></td>
+                    <td class="col-fright">2224402</td>
+                    <td class="col-payment" style="color: red;">2061291</td>
+                    <td colspan="1"></td>
+                    <td class="col-black" style="color: black;">TOTAL</td>
+                    <td class="col-bal" style="color: #22c55e;">1418783</td>
+                    <td class="col-sur"></td>
+                    <td class="col-shortage">1255672</td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+            document.getElementById('summaryBlock').style.display = 'grid';
+        }
+
+        async function seedDatabase() {
+            try {
+                const pBtn = document.getElementById('seedBtn');
+                pBtn.innerText = 'Seeding...';
+                pBtn.disabled = true;
+
+                const response = await fetch(`${API_BASE}/ledger/seed`, { method: 'POST' });
+                const result = await response.json();
+                
+                pBtn.innerText = 'Initialize / Reset Data';
+                pBtn.disabled = false;
+
+                if (result.success) {
+                    fetchLedger();
+                } else {
+                    alert('Error seeding data');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Connection error while seeding');
+            }
+        }
+    </script>
+</body>
+</html>

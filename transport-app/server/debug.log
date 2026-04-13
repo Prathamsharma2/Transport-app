@@ -1,0 +1,21 @@
+--- [DEBUG] Server starting ---
+--- [DEBUG] Dotenv loaded ---
+--- [DEBUG] Modules required ---
+--- [DEBUG] Database module (COMMENTED OUT) ---
+--- [DEBUG] DB Config starting ---
+--- [DEBUG] DB Dotenv loaded ---
+--- [DEBUG] Routes loaded ---
+🚀 Server is listening on http://localhost:4000
+--- Initializing Database (MySQL Hostinger) ---
+/Users/prathamsharma/Documents/test applications/transport-system/transport-app/server/server.js:39
+    initSchema()
+    ^
+
+ReferenceError: initSchema is not defined
+    at Server.<anonymous> (/Users/prathamsharma/Documents/test applications/transport-system/transport-app/server/server.js:39:5)
+    at Object.onceWrapper (node:events:638:28)
+    at Server.emit (node:events:536:35)
+    at emitListeningNT (node:net:1951:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)
+
+Node.js v20.20.1

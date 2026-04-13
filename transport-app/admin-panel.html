@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DHILLON ROADLINES — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --sidebar:  #16181f;
+      --card:     #1e2029;
+      --border:   #2a2d3a;
+      --purple:   #7c3aed;
+      --purple2:  #6d28d9;
+      --text:     #e2e8f0;
+      --muted:    #8892a4;
+      --green:    #10b981;
+      --red:      #ef4444;
+      --input-bg: #12141a;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── LOCK SCREEN ── */
+    #lockScreen {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .lock-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      width: 360px;
+      text-align: center;
+    }
+    .lock-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .lock-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .lock-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+    .lock-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 15px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      outline: none;
+      letter-spacing: 3px;
+      transition: border-color .2s;
+    }
+    .lock-input:focus { border-color: var(--purple); }
+    .lock-btn {
+      width: 100%;
+      background: var(--purple);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+    .lock-btn:hover { background: var(--purple2); }
+    .lock-btn:active { transform: scale(0.98); }
+    #lockError {
+      color: var(--red);
+      font-size: 13px;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+    }
+    .sidebar-logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo h1 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .sidebar-logo span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .nav-section {
+      padding: 20px 12px 8px;
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      font-size: 13.5px;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 2px 8px;
+      transition: all .15s;
+      user-select: none;
+    }
+    .nav-item:hover { background: rgba(124,58,237,.1); color: var(--text); }
+    .nav-item.active { background: rgba(124,58,237,.2); color: #a78bfa; font-weight: 600; }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+    /* ── MAIN ── */
+    #main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    /* header */
+    .topbar {
+      height: 56px;
+      background: var(--sidebar);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      flex-shrink: 0;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      background: var(--purple);
+      color: #fff;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+
+    /* content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+    .content::-webkit-scrollbar { width: 6px; }
+    .content::-webkit-scrollbar-track { background: transparent; }
+    .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* page */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 24px; }
+
+    /* card */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* form */
+    .form-grid { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 14px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-full { grid-column: 1/-1; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    input, textarea, select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color .2s;
+      resize: vertical;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--purple); }
+    textarea { min-height: 80px; }
+
+    /* buttons */
+    .btn {
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--purple); color: #fff; }
+    .btn-primary:hover { background: var(--purple2); }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-ghost {
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,.1); }
+    .btn-full { width: 100%; padding: 13px; font-size: 14px; }
+
+    /* toast */
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--green);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all .3s;
+      z-index: 9998;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.error { background: var(--red); }
+
+    /* user table */
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th { text-align: left; padding: 10px 14px; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    .role-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .role-admin { background: rgba(124,58,237,.2); color: #a78bfa; }
+    .role-staff { background: rgba(16,185,129,.15); color: #6ee7b7; }
+    .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+    /* stat cards */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* history */
+    .history-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-dot {
+      width: 8px; height: 8px;
+      background: var(--purple);
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .history-version { font-size: 13px; font-weight: 700; color: #a78bfa; }
+    .history-msg { font-size: 13px; color: var(--text); margin-top: 2px; }
+    .history-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ LOCK SCREEN ══════════ -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon">🔐</div>
+    <h2>Developer Admin Panel</h2>
+    <p>Sirf developer ke liye — password daalein</p>
+    <input id="adminPwd" class="lock-input" type="password" placeholder="••••••••••" autocomplete="off">
+    <button class="lock-btn" onclick="unlock()">Unlock Panel</button>
+    <div id="lockError"></div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <h1>Dhillon Roadlines</h1>
+    <span>Developer Admin Panel</span>
+  </div>
+  <div class="nav-section">Main</div>
+  <div class="nav-item active" onclick="showPage('updates')">
+    <span class="icon">🔔</span> Updates
+  </div>
+  <div class="nav-item" onclick="showPage('users')">
+    <span class="icon">👥</span> Users
+  </div>
+  <div class="nav-item" onclick="showPage('history')">
+    <span class="icon">📋</span> History
+  </div>
+  <div style="margin-top:auto; padding: 16px 12px 0;">
+    <div class="nav-item" onclick="lockPanel()" style="color:#ef4444;">
+      <span class="icon">🔒</span> Lock Panel
+    </div>
+  </div>
+</div>
+
+<div id="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle">🔔 Send Update</span>
+    <div class="topbar-right">
+      <span class="badge">v1.0.1</span>
+      <div class="avatar">D</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── PAGE: UPDATES ── -->
+    <div class="page active" id="page-updates">
+      <div class="page-title">Send Update to All Clients</div>
+
+      <div class="card">
+        <div class="card-title">🚀 Naya Update Bhejo</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">
+          Yeh update Hostinger MySQL mein save hoga. Jab bhi koi client app kholega — usse notification aayegi automatically.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-bottom:14px;">
+          <div>
+            <label>Version Number</label>
+            <input id="upVersion" placeholder="e.g. 1.0.2" />
+          </div>
+          <div>
+            <label>Update Message (Client ko dikhega)</label>
+            <input id="upMessage" placeholder="e.g. Bug fix: login issue theek kiya, performance improve ki" />
+          </div>
+          <div style="grid-column:1/-1;">
+            <label>Download Link (Optional)</label>
+            <input id="upUrl" placeholder="https://drive.google.com/... ya WeTransfer link" />
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="sendUpdate()">
+          🚀 Sab Clients Ko Update Notification Bhejo
+        </button>
+      </div>
+
+      <div class="card" style="border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05);">
+        <div class="card-title">ℹ️ Kaise kaam karta hai?</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8;">
+          1. <strong style="color:var(--text);">Version</strong> mein naya number daalo (current app version 1.0.1 se alag hona chahiye)<br>
+          2. <strong style="color:var(--text);">Message</strong> mein likho kya badla — clients ko yahi dikhega<br>
+          3. <strong style="color:var(--text);">Download Link</strong> optional hai — agar naya .exe/.dmg share karna ho to<br>
+          4. <strong style="color:var(--text);">Send karo</strong> — Hostinger MySQL mein record jayega<br>
+          5. Client jab app kholega — <strong style="color:#a78bfa;">purple banner</strong> screen ke upar aayega
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: USERS ── -->
+    <div class="page" id="page-users">
+      <div class="page-title">Manage Users</div>
+      <div class="card">
+        <div class="card-title">➕ Naya User Banao</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 120px auto;gap:12px;align-items:end;">
+          <div>
+            <label>Username</label>
+            <input id="newUname" placeholder="username" />
+          </div>
+          <div>
+            <label>Password</label>
+            <input id="newPwd" type="password" placeholder="password" />
+          </div>
+          <div>
+            <label>Role</label>
+            <select id="newRole">
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn btn-success" onclick="createUserAdmin()" style="width:100%;padding:10px;">+ Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 All Users</div>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Username</th><th>Role</th><th>Action</th></tr>
+          </thead>
+          <tbody id="usersTable">
+            <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px;">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── PAGE: HISTORY ── -->
+    <div class="page" id="page-history">
+      <div class="page-title">Update History</div>
+      <div class="card">
+        <div class="card-title">📋 Pichle Sab Updates</div>
+        <div id="historyList" style="color:var(--muted);font-size:13px;">Loading...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const { ipcRenderer } = require('electron');
+const db = require('./db');
+
+// ── LOCK ──────────────────────────────────
+const ADMIN_PWD = process.env.ADMIN_PANEL_PASSWORD || '1234';
+
+function unlock() {
+  const val = document.getElementById('adminPwd').value;
+  if (val === ADMIN_PWD) {
+    document.getElementById('lockScreen').style.display = 'none';
+    loadUsers();
+    loadHistory();
+  } else {
+    document.getElementById('lockError').textContent = '❌ Wrong password';
+    document.getElementById('adminPwd').value = '';
+    setTimeout(() => document.getElementById('lockError').textContent = '', 2000);
+  }
+}
+
+document.getElementById('adminPwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') unlock();
+});
+
+function lockPanel() {
+  document.getElementById('adminPwd').value = '';
+  document.getElementById('lockError').textContent = '';
+  document.getElementById('lockScreen').style.display = 'flex';
+}
+
+// ── NAVIGATION ──────────────────────────
+const titles = { updates:'🔔 Send Update', users:'👥 Manage Users', history:'📋 Update History' };
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  document.getElementById('topbarTitle').textContent = titles[name];
+  if (name === 'users') loadUsers();
+  if (name === 'history') loadHistory();
+}
+
+// ── TOAST ──────────────────────────────
+function toast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = '', 3000);
+}
+
+// ── SEND UPDATE ─────────────────────────
+function sendUpdate() {
+  const version = document.getElementById('upVersion').value.trim();
+  const message = document.getElementById('upMessage').value.trim();
+  const url     = document.getElementById('upUrl').value.trim();
+  if (!version || !message) { toast('Version aur message required hai!', true); return; }
+
+  db.pushUpdate(version, message, url, (err) => {
+    if (err) { toast('Error: ' + err.message, true); return; }
+    toast('✅ Update sent! Sab clients ko notification aayegi.');
+    document.getElementById('upVersion').value = '';
+    document.getElementById('upMessage').value = '';
+    document.getElementById('upUrl').value = '';
+    loadHistory();
+  });
+}
+
+// ── USERS ──────────────────────────────
+function loadUsers() {
+  db.getUsers((rows) => {
+    const tbody = document.getElementById('usersTable');
+    if (!rows || rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px;">Koi user nahi hai</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="color:var(--muted)">${r.id}</td>
+        <td><strong>${r.username}</strong></td>
+        <td><span class="role-badge role-${r.role}">${r.role}</span></td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteUserAdmin(${r.id})">Delete</button></td>
+      </tr>
+    `).join('');
+  });
+}
+
+function createUserAdmin() {
+  const u = document.getElementById('newUname').value.trim();
+  const p = document.getElementById('newPwd').value.trim();
+  const r = document.getElementById('newRole').value;
+  if (!u || !p) { toast('Username aur password chahiye', true); return; }
+  db.createUser(u, p, r, (err) => {
+    if (err) { toast('Error: ' + err.message, true); return; }
+    toast('✅ User banaya: ' + u);
+    document.getElementById('newUname').value = '';
+    document.getElementById('newPwd').value = '';
+    loadUsers();
+  });
+}
+
+function deleteUserAdmin(id) {
+  if (!confirm('Is user ko delete karna chahte ho?')) return;
+  db.deleteUser(id, (err) => {
+    if (err) { toast('Error: ' + err.message, true); return; }
+    toast('User delete ho gaya');
+    loadUsers();
+  });
+}
+
+// ── HISTORY ────────────────────────────
+function loadHistory() {
+  const list = document.getElementById('historyList');
+  db.pool ? null : null;
+  // Use direct query via pool
+  const mysql = require('mysql2/promise');
+  require('dotenv').config();
+  const pool = mysql.createPool({
+    host: process.env.MYSQL_HOST, user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE,
+    port: process.env.MYSQL_PORT || 3306,
+  });
+  pool.then(p =>
+    p.query('SELECT * FROM app_updates ORDER BY released_at DESC LIMIT 20')
+  ).then(([rows]) => {
+    if (!rows.length) { list.innerHTML = '<p style="color:var(--muted)">Abhi tak koi update nahi bheja</p>'; return; }
+    list.innerHTML = rows.map(r => `
+      <div class="history-item">
+        <div class="history-dot"></div>
+        <div>
+          <div class="history-version">v${r.version}</div>
+          <div class="history-msg">${r.message}</div>
+          ${r.download_url ? `<a href="${r.download_url}" style="font-size:11px;color:#a78bfa;">Download Link</a>` : ''}
+          <div class="history-date">${new Date(r.released_at).toLocaleString('en-IN')}</div>
+        </div>
+      </div>
+    `).join('');
+  }).catch(e => {
+    list.innerHTML = `<p style="color:var(--muted)">${e.message}</p>`;
+  });
+}
+</script>
+</body>
+</html>

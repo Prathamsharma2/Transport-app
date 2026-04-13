@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dhillon Roadlines - ERP Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff3e60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+      <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: #1e293b;">DHILLON <span style="color: #ff3e60;">ROADLINES</span></span>
+    </div>
+
+    <nav class="nav-links">
+      <div class="nav-item">
+        <a href="#" class="nav-link active" id="link-dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-loads">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          Load Management
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-fleet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          Fleet Management
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-drivers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Driver Management
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-trips">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Trip Management
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-finance">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Finance & Expenses
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-billing">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Billing & Invoices
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-reports">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Reports & Analytics
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link" id="link-ledger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          KOGM Ledger
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer" style="padding: 20px; border-top: 1px solid #f1f5f9;">
+      <button id="signOutBtn" class="btn-ghost" style="width: 100%; justify-content: flex-start; color: #ff3e60;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- DASHBOARD SECTION -->
+    <section id="section-dashboard">
+      <header class="header">
+        <div class="header-title">
+          <h2>Dashboard Overview</h2>
+        </div>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Trips</div>
+          <div class="stat-value" id="statsTotalTrips">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Trips</div>
+          <div class="stat-value" id="statsActiveTrips">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Revenue (₹)</div>
+          <div class="stat-value" id="statsTotalRevenue">₹0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Expenses (₹)</div>
+          <div class="stat-value" id="statsTotalExpenses">₹0</div>
+        </div>
+      </div>
+
+      <div class="center-card glass">
+        <h3>Net Profit Validation</h3>
+        <div class="profit-value" id="statsNetProfit">₹0</div>
+        <p>Overall financial performance across all operations.</p>
+      </div>
+    </section>
+
+    <!-- LOADS SECTION -->
+    <section id="section-loads" class="hidden">
+      <header class="header">
+        <div class="header-title"><h2>Load Management</h2></div>
+        <button class="btn-primary hover-scale" id="btnCreateLoad">+ Create Load</button>
+      </header>
+      <div class="data-table-container">
+        <table id="table-loads">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pickup</th>
+              <th>Drop</th>
+              <th>GR No.</th>
+              <th>Weight</th>
+              <th>Freight (₹)</th>
+              <th>Balance (₹)</th>
+              <th>Status</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-fleet" class="hidden">
+      <header class="header">
+        <div class="header-title"><h2>Fleet Management</h2></div>
+        <button class="btn-primary hover-scale" id="btnCreateVehicle">+ Create Vehicle</button>
+      </header>
+      <div class="data-table-container">
+        <table id="table-vehicles">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Vehicle Number</th>
+              <th>Type</th>
+              <th>Capacity</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-drivers" class="hidden">
+      <header class="header">
+        <div class="header-title"><h2>Driver Management</h2></div>
+        <button class="btn-primary hover-scale" id="btnCreateDriver">+ Create Driver</button>
+      </header>
+      <div class="data-table-container">
+        <table id="table-drivers">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-trips" class="hidden">
+      <header class="header">
+        <div class="header-title"><h2>Trip Management</h2></div>
+        <button class="btn-primary hover-scale" id="btnCreateTrip">+ Create Trip</button>
+      </header>
+
+      <!-- Availability Summary Bar -->
+      <div class="stats-grid" style="margin-bottom: 24px; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+        <div class="stat-card" style="border-left: 4px solid #22c55e;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="stat-label">DRIVERS</div>
+            <span class="badge badge-available" id="countAvailDrivers">0 Available</span>
+          </div>
+          <div style="margin-top: 8px; font-size: 11px; color: #64748b;" id="textBusyDrivers">0 Currently On Trip</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #3b82f6;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="stat-label">VEHICLES</div>
+            <span class="badge badge-available" id="countAvailVehicles">0 Available</span>
+          </div>
+          <div style="margin-top: 8px; font-size: 11px; color: #64748b;" id="textBusyVehicles">0 Currently On Trip</div>
+        </div>
+      </div>
+      <div class="data-table-container">
+        <table id="table-trips">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Vehicle</th>
+              <th>Driver</th>
+              <th>Pickup</th>
+              <th>Drop</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FINANCE SECTION -->
+    <section id="section-finance" class="hidden">
+      <header class="header">
+        <div class="header-title"><h2>Finance & Expenses</h2></div>
+        <button class="btn-primary hover-scale" id="btnCreateExpense">+ Add Expense</button>
+      </header>
+
+      <!-- Expense Stats -->
+      <div class="stats-grid">
+        <div class="stat-card" style="border-left: 4px solid #64748b;">
+          <div class="stat-label">TOTAL EXPENSES</div>
+          <div class="stat-value" id="finTotalExpenses">₹0</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #ff3e60;">
+          <div class="stat-label">FUEL COSTS</div>
+          <div class="stat-value" id="finFuelCosts">₹0</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+          <div class="stat-label">MAINTENANCE</div>
+          <div class="stat-value" id="finMaintCosts">₹0</div>
+        </div>
+      </div>
+
+      <div class="data-table-container">
+        <table id="table-expenses">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Trip/Vehicle</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <section id="section-billing" class="hidden">
+      <header class="header">
+        <div class="header-title"><h2>Billing & Invoices</h2></div>
+      </header>
+      <div class="data-table-container">
+        <table id="table-billing">
+          <thead>
+            <tr>
+              <th>Invoice ID</th>
+              <th>Trip ID</th>
+              <th>Pickup</th>
+              <th>Drop</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Trip Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REPORTS SECTION -->
+    <section id="section-reports" class="hidden">
+      <header class="header">
+        <div class="header-title">
+          <h2>Reports & Analytics</h2>
+          <p style="font-size: 13px; color: var(--text-secondary);">Detailed financial performance analysis</p>
+        </div>
+        <div class="date-filters">
+          <button class="btn-secondary btn-filter" onclick="setReportFilter('today')">Today</button>
+          <button class="btn-primary btn-filter active" onclick="setReportFilter('month')">This Month</button>
+          <button class="btn-secondary btn-filter" onclick="setReportFilter('year')">This Year</button>
+        </div>
+      </header>
+
+      <!-- Custom Date Picker -->
+      <div class="glass" style="padding: 20px; border-radius: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 20px;">
+        <div class="form-group" style="margin-bottom: 0; flex: 1;">
+          <label style="margin-bottom: 4px;">FROM</label>
+          <input type="date" id="repFilterFrom" style="padding: 8px 12px; font-size: 13px;">
+        </div>
+        <div class="form-group" style="margin-bottom: 0; flex: 1;">
+          <label style="margin-bottom: 4px;">TO</label>
+          <input type="date" id="repFilterTo" style="padding: 8px 12px; font-size: 13px;">
+        </div>
+        <button class="btn-primary hover-scale" style="padding: 10px 20px; margin-top: 18px;" onclick="fetchAnalytics()">Apply Filter</button>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card" style="border-left: 4px solid #16a34a;">
+          <div class="stat-label">TOTAL REVENUE</div>
+          <div class="stat-value" id="repTotalRevenue">₹0</div>
+          <div style="font-size: 11px; color: #16a34a; margin-top: 4px;">↗ All paid/unpaid invoices</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #ff3e60;">
+          <div class="stat-label">TOTAL EXPENSES</div>
+          <div class="stat-value" id="repTotalExpenses">₹0</div>
+          <div style="font-size: 11px; color: #ff3e60; margin-top: 4px;">↘ All trip costs</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #3b82f6;">
+          <div class="stat-label">NET PROFIT</div>
+          <div class="stat-value" id="repNetProfit">₹0</div>
+          <div style="font-size: 11px; color: #3b82f6; margin-top: 4px;" id="repMargin">Margin: 0%</div>
+        </div>
+      </div>
+
+      <!-- Performance Breakdown Table -->
+      <div style="background: var(--card-bg); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden;">
+        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 14px; font-weight: 700;">Trip Performance Breakdown</h3>
+          <span style="font-size: 12px; color: var(--text-secondary);" id="repTripCount">Showing 0 trips</span>
+        </div>
+        <table id="table-reports">
+          <thead>
+            <tr>
+              <th>Trip ID</th>
+              <th>Date</th>
+              <th>Vehicle</th>
+              <th>Revenue</th>
+              <th>Expenses</th>
+              <th>Profit</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    
+    <!-- KOGM LEDGER SECTION -->
+    <section id="section-ledger" class="hidden">
+      <header class="header" style="flex-wrap: wrap; gap: 16px;">
+        <div class="header-title">
+          <h2>KOGM Book Ledger</h2>
+          <p id="ledgerSubtitle" style="font-size: 13px; color: var(--text-secondary);">Sheet Data: All Months</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <!-- Month Selector -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Month</label>
+            <select id="ledgerMonthFilter" onchange="loadLedgerData()" style="padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer; outline: none;">
+              <option value="">All</option>
+              <option value="Jan">January</option>
+              <option value="Feb">February</option>
+              <option value="Mar" selected>March</option>
+              <option value="Apr">April</option>
+              <option value="May">May</option>
+              <option value="Jun">June</option>
+              <option value="Jul">July</option>
+              <option value="Aug">August</option>
+              <option value="Sep">September</option>
+              <option value="Oct">October</option>
+              <option value="Nov">November</option>
+              <option value="Dec">December</option>
+            </select>
+          </div>
+          <!-- Year Selector -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Year</label>
+            <select id="ledgerYearFilter" onchange="loadLedgerData()" style="padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer; outline: none;">
+              <option value="25">2025</option>
+              <option value="26" selected>2026</option>
+              <option value="27">2027</option>
+            </select>
+          </div>
+          <button class="btn-primary hover-scale" onclick="loadLedgerData()" style="padding: 8px 18px;">↻ Refresh</button>
+        </div>
+      </header>
+      
+      <!-- Ledger Summary Cards -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div class="stat-card" style="padding: 16px; border-left: 4px solid #06b6d4;">
+          <div class="stat-label">TOTAL FREIGHT</div>
+          <div class="stat-value" id="ledgerTotalFright" style="font-size: 20px;">₹0</div>
+        </div>
+        <div class="stat-card" style="padding: 16px; border-left: 4px solid #22c55e;">
+          <div class="stat-label">TOTAL PAYMENT REC.</div>
+          <div class="stat-value" id="ledgerTotalPayment" style="font-size: 20px;">₹0</div>
+        </div>
+        <div class="stat-card" style="padding: 16px; border-left: 4px solid #ef4444;">
+          <div class="stat-label">TOTAL SHORTAGE</div>
+          <div class="stat-value" id="ledgerTotalShortage" style="font-size: 20px;">₹0</div>
+        </div>
+      </div>
+
+      <div class="data-table-container" style="overflow-x: auto;">
+        <table id="table-ledger" class="ledger-table">
+          <thead>
+            <tr style="text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
+              <th style="color: #ef4444;">Date</th>
+              <th style="color: #22c55e;">Truck No</th>
+              <th style="color: #000000;">Station</th>
+              <th style="color: #ef4444;">GR</th>
+              <th style="color: #22c55e;">Weight</th>
+              <th style="color: #06b6d4;">Fright</th>
+              <th style="color: #22c55e;">Payment</th>
+              <th style="color: #ef4444;">Box</th>
+              <th style="color: #9333ea;">From To</th>
+              <th style="color: #ef4444;">Bal</th>
+              <th style="color: #ef4444;">Sur</th>
+              <th style="color: #ef4444;">Shortage</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL: CREATE LOAD -->
+<div id="modalCreateLoad" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Create New Load</h3>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalCreateLoad')">&times;</button>
+    </div>
+    <form id="formCreateLoad">
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        
+        <!-- SECTION 1: Load Details -->
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size:12px;">🟢</span><div style="font-size:12px; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.5px;">Section 1: Load Details</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Pickup Location</label><input type="text" id="loadPickup" placeholder="Pickup Location" required></div>
+            <div class="form-group"><label>Drop Location</label><input type="text" id="loadDrop" placeholder="Drop Location" required></div>
+          </div>
+          <div class="form-group"><label>Weight (Tons)</label><input type="number" step="any" id="loadWeight" placeholder="e.g. 20" required></div>
+        </div>
+
+        <div class="form-divider" style="height:1px; background:rgba(255,255,255,0.05); margin:16px 0;"></div>
+
+        <!-- SECTION 2: Parties -->
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size:12px;">🟢</span><div style="font-size:12px; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.5px;">Section 2: Parties</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Consignor (Sender)</label><input type="text" id="loadConsignor" placeholder="Sender Name"></div>
+            <div class="form-group"><label>Consignee (Receiver)</label><input type="text" id="loadConsignee" placeholder="Receiver Name"></div>
+          </div>
+        </div>
+
+        <div class="form-divider" style="height:1px; background:rgba(255,255,255,0.05); margin:16px 0;"></div>
+
+        <!-- SECTION 3: Pricing (Simplified) -->
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size:12px;">🟢</span><div style="font-size:12px; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.5px;">Section 3: Pricing (Simplified)</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Freight (₹)</label><input type="number" id="loadFreight" placeholder="Total Final Freight"></div>
+            <div class="form-group"><label>Advance Paid (₹)</label><input type="number" id="loadPayment" placeholder="Advance Amount"></div>
+          </div>
+          <div class="form-group">
+            <label>Balance (₹)</label>
+            <input type="number" id="loadBalance" placeholder="Auto-calculated" disabled style="background:#f1f5f9; cursor:not-allowed; font-weight:bold; color:#ff3e60;">
+          </div>
+        </div>
+
+        <div class="form-divider" style="height:1px; background:rgba(255,255,255,0.05); margin:16px 0;"></div>
+
+        <!-- SECTION 4: Logistics Details -->
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size:12px;">🟢</span><div style="font-size:12px; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:0.5px;">Section 4: Logistics Details</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>GR Number</label><input type="text" id="loadGR" placeholder="e.g. 15254"></div>
+            <div class="form-group"><label>Station</label><input type="text" id="loadStation" placeholder="e.g. SGNR"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Route (From - To)</label><input type="text" id="loadFromTo" placeholder="e.g. KOGM SGNR"></div>
+            <div class="form-group"><label>Box/Brand</label><input type="text" id="loadBox" placeholder="e.g. CAKE"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Shortage (KG)</label><input type="number" step="any" id="loadShortage" placeholder="Shortage Weight"></div>
+            <div class="form-group"><label>Sur/Other (₹)</label><input type="number" id="loadSur" placeholder="Surcharge"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modalCreateLoad')">Cancel</button>
+        <button type="submit" class="btn-primary hover-scale">Create Load</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: LOAD DETAILS (Matches Screenshot Layout) -->
+<div id="modalLoadDetails" class="modal-overlay hidden">
+  <div class="modal-card detail-card">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div class="modal-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div>
+        <div>
+          <h3 id="detLoadTitle">Load #1</h3>
+          <span class="badge badge-pending" id="detStatusBadge">PENDING</span>
+        </div>
+      </div>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalLoadDetails')">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Route Box (Full Width) -->
+      <div class="detail-box route-box">
+        <div class="route-point">
+          <div class="point-icon origin"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle></svg></div>
+          <div>
+            <label>ORIGIN</label>
+            <div class="point-val" id="detOrigin">-</div>
+          </div>
+        </div>
+        <div class="route-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg></div>
+        <div class="route-point">
+          <div class="point-icon destination"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+          <div>
+            <label>DESTINATION</label>
+            <div class="point-val" id="detDestination">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="detail-grid">
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
+          <div>
+            <label>WEIGHT</label>
+            <div class="box-val" id="detWeight">-</div>
+          </div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+          <div>
+            <label>CONSIGNOR</label>
+            <div class="box-val" id="detConsignor">-</div>
+          </div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+          <div>
+            <label>CONSIGNEE</label>
+            <div class="box-val" id="detConsignee">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financials Section in Details -->
+      <div style="margin: 20px 0; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
+        <div style="font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase;">Ledger & Financials</div>
+        <div class="detail-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div><label style="font-size:9px;">GR NO</label><div id="detGR" style="font-size:13px; font-weight:600; color:#ef4444;">-</div></div>
+          <div><label style="font-size:9px;">FREIGHT</label><div id="detFreight" style="font-size:13px; font-weight:600; color:#06b6d4;">-</div></div>
+          <div><label style="font-size:9px;">ADVANCE/PAID</label><div id="detPayment" style="font-size:13px; font-weight:600; color:#22c55e;">-</div></div>
+          <div><label style="font-size:9px;">SHORTAGE (KG)</label><div id="detShortage" style="font-size:13px; font-weight:600; color:#ef4444;">-</div></div>
+          <div><label style="font-size:9px;">BALANCE</label><div id="detBalance" style="font-size:13px; font-weight:700; color:#ff3e60;">-</div></div>
+          <div><label style="font-size:9px;">BOX / BRAND</label><div id="detBox" style="font-size:13px; font-weight:600;">-</div></div>
+        </div>
+      </div>
+
+      <div class="modal-footer-actions">
+        <button class="btn-ghost" id="btnEditLoad">Edit Load</button>
+        <button class="btn-secondary" id="btnDeleteLoad">Delete Load</button>
+        <button class="btn-primary" onclick="closeModal('modalLoadDetails')">Close Details</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DRIVER PROFILE -->
+<div id="modalDriverProfile" class="modal-overlay hidden">
+  <div class="modal-card detail-card">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div class="modal-icon-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+        <div>
+          <h3 id="detDriName">Driver Name</h3>
+          <span class="badge" id="detDriStatus">AVAILABLE</span>
+        </div>
+      </div>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalDriverProfile')">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div>
+          <div>
+            <label>LICENSE NO.</label>
+            <div class="box-val" id="detDriLicense">Not Provided</div>
+          </div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="12" y2="16"></line></svg></div>
+          <div>
+            <label>AADHAAR NO.</label>
+            <div class="box-val" id="detDriAadhaar">Not Provided</div>
+          </div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+          <div>
+            <label>PHONE</label>
+            <div class="box-val" id="detDriPhone">-</div>
+          </div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+          <div>
+            <label>JOINED DATE</label>
+            <div class="box-val" id="detDriJoined">-</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" style="width: 100%;" onclick="closeModal('modalDriverProfile')">Close Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TRIP SUMMARY -->
+<div id="modalTripSummary" class="modal-overlay hidden">
+  <div class="modal-card detail-card" style="max-width: 600px;">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div class="modal-icon-box" style="background: #fff5f6; color: #ff3e60;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+        <div>
+          <h3 id="sumTripTitle">Trip Summary #1</h3>
+          <span class="badge" id="sumTripStatus">PENDING</span>
+        </div>
+      </div>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalTripSummary')">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Participant info cards -->
+      <div class="detail-grid">
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+          <div>
+            <label>VEHICLE</label>
+            <div class="box-val" id="sumVehNumber">-</div>
+            <div style="font-size: 10px; color: #64748b;" id="sumVehType">-</div>
+          </div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+          <div>
+            <label>DRIVER</label>
+            <div class="box-val" id="sumDriName">-</div>
+            <div style="font-size: 10px; color: #64748b;" id="sumDriPhone">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Breakdown -->
+      <div style="margin: 24px 0 16px;">
+        <h4 style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-bottom: 12px;">Financial Breakdown</h4>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div style="background: #f0fdf4; border: 1px solid #dcfce7; padding: 12px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 9px; font-weight: 700; color: #16a34a;">REVENUE</div>
+            <div style="font-size: 16px; font-weight: 800; color: #16a34a;" id="sumRevenue">₹0</div>
+          </div>
+          <div style="background: #fff5f6; border: 1px solid #ffebeb; padding: 12px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 9px; font-weight: 700; color: #ff3e60;">EXPENSES</div>
+            <div style="font-size: 16px; font-weight: 800; color: #ff3e60;" id="sumExpenses">₹0</div>
+          </div>
+          <div style="background: #eff6ff; border: 1px solid #dbeafe; padding: 12px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 9px; font-weight: 700; color: #3b82f6;">PROFIT</div>
+            <div style="font-size: 16px; font-weight: 800; color: #3b82f6;" id="sumProfit">₹0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expense List -->
+      <div style="margin-bottom: 24px;">
+        <label style="font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 0.5px;">EXPENSE LIST</label>
+        <div id="sumExpenseList" style="font-size: 12px; color: #475569; margin-top: 8px;">
+          No expenses recorded.
+        </div>
+      </div>
+
+      <!-- Load Information Card -->
+      <div style="background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 16px; padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">LOAD INFORMATION</span>
+        </div>
+        <h4 id="sumLoadTitle" style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 16px;">-</h4>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="text-align: left;">
+            <label style="display: block; font-size: 9px; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">ORIGIN</label>
+            <div style="font-size: 13px; font-weight: 600; color: #334155;" id="sumOrigin">-</div>
+          </div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+          <div style="text-align: right;">
+            <label style="display: block; font-size: 9px; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">DESTINATION</label>
+            <div style="font-size: 13px; font-weight: 600; color: #334155;" id="sumDestination">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Banner -->
+      <div style="margin-top: 16px; background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 12px;">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+         <div id="sumAuditInfo" style="font-size: 11px; color: #0f766e; font-weight: 500;">
+           Trip was started recently and is currently in progress.
+         </div>
+      </div>
+
+      <button class="btn-primary" style="width: 100%; margin-top: 24px;" onclick="closeModal('modalTripSummary')">Close Summary</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CREATE VEHICLE -->
+<div id="modalCreateVehicle" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Add New Vehicle</h3>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalCreateVehicle')">&times;</button>
+    </div>
+    <form id="formCreateVehicle">
+      <div class="modal-body">
+        <div class="form-group"><label>Vehicle Number</label><input type="text" id="vehNumber" placeholder="e.g. MH 12 AB 1234" required></div>
+        <div class="form-row">
+          <div class="form-group"><label>Vehicle Type</label><input type="text" id="vehType" placeholder="e.g. 10 Wheeler" required></div>
+          <div class="form-group"><label>Capacity (Tons)</label><input type="number" id="vehCapacity" placeholder="e.g. 20"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Make</label><input type="text" id="vehMake" placeholder="e.g. Tata"></div>
+          <div class="form-group"><label>Model</label><input type="text" id="vehModel" placeholder="e.g. Signa"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modalCreateVehicle')">Cancel</button>
+        <button type="submit" class="btn-primary hover-scale">Add Vehicle</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: CREATE DRIVER -->
+<div id="modalCreateDriver" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Add New Driver</h3>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalCreateDriver')">&times;</button>
+    </div>
+    <form id="formCreateDriver">
+      <div class="modal-body">
+        <div class="form-group"><label>Full Name</label><input type="text" id="driName" placeholder="Driver Full Name" required></div>
+        <div class="form-group">
+          <label>Phone Number <span id="driPhoneHint" class="validation-error hidden">(10 digits required)</span></label>
+          <input type="text" id="driPhone" placeholder="10-digit number" maxlength="10" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>License Number</label><input type="text" id="driLicense" placeholder="DL Number"></div>
+          <div class="form-group"><label>Aadhaar Number</label><input type="text" id="driAadhaar" placeholder="12-digit Aadhaar"></div>
+        </div>
+        <div class="form-group"><label>Joined Date</label><input type="date" id="driJoined"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modalCreateDriver')">Cancel</button>
+        <button type="submit" class="btn-primary hover-scale">Add Driver</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: CREATE TRIP -->
+<div id="modalCreateTrip" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Create & Assign Trip</h3>
+      <button class="btn-ghost modal-close-icon" onclick="closeModal('modalCreateTrip')">&times;</button>
+    </div>
+    <form id="formCreateTrip">
+      <div class="modal-body">
+        <div class="form-group"><label>Select Load</label><select id="tripLoadId" required><option value="">-- Select Load --</option></select></div>
+        <div class="form-row">
+          <div class="form-group"><label>Select Vehicle</label><select id="tripVehicleId" required><option value="">-- Select Vehicle --</option></select></div>
+          <div class="form-group"><label>Select Driver</label><select id="tripDriverId" required><option value="">-- Select Driver --</option></select></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modalCreateTrip')">Cancel</button>
+        <button type="submit" class="btn-primary hover-scale">Create Trip</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: CREATE EXPENSE -->
+<div id="modalCreateExpense" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Add New Expense</h3>
+      <button class="modal-close-icon" onclick="closeModal('modalCreateExpense')">&times;</button>
+    </div>
+    <form id="formCreateExpense">
+      <div class="modal-body">
+        <div class="form-group"><label>Select Trip</label><select id="expTripId" required><option value="">-- Select Trip --</option></select></div>
+        <div class="form-row">
+          <div class="form-group"><label>Category</label><input type="text" id="expCategory" placeholder="e.g. Fuel / Maintenance"></div>
+          <div class="form-group"><label>Expense Date</label><input type="date" id="expDate"></div>
+        </div>
+        <div class="form-group"><label>Description</label><input type="text" id="expDesc" placeholder="e.g. 50L Diesel at Petrol Pump"></div>
+        <div class="form-group"><label>Amount (₹)</label><input type="number" id="expAmount" placeholder="Amount in Rupees" required></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modalCreateExpense')">Cancel</button>
+        <button type="submit" class="btn-primary hover-scale">Add Expense</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="js/supabase-client.js"></script>
+<!-- PRINTABLE BILL TEMPLATE (DHILLON ROADLINES STYLE) -->
+<div id="printable-bill" class="hidden" style="background: white; color: black; padding: 30px; font-family: 'Arial', sans-serif; width: 800px; margin: 0 auto; line-height: 1.4;">
+  <!-- Header Section -->
+  <div style="display: flex; justify-content: space-between; align-items: stretch; border: 1px solid #000; border-bottom: none; border-top: 3px solid #000;">
+    <!-- Logo / Address Box -->
+    <div style="flex: 2; padding: 15px; text-align: center; border-right: 1px solid #000;">
+      <h1 style="color: #d32f2f; margin: 0; font-size: 38px; font-weight: 900; letter-spacing: 0px; text-shadow: 1px 1px 0px rgba(0,0,0,0.1);">DHILLON <span style="font-size: 20px;"> ROADLINES</span></h1>
+      <p style="font-size: 14px; margin: 6px 0; font-weight: 800; color: #000080; text-transform: uppercase;">Fleet Owners & Transport Contractors</p>
+      <p style="font-size: 11px; font-weight: 700; color: #000;">Bhakthal Ki Choki, M.I.A. Main Road, Alwar - 301030 (Raj.)</p>
+    </div>
+    <!-- Sale Tax Box (Right side) -->
+    <div style="flex: 1; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div style="border: 2px solid #d32f2f; color: #d32f2f; padding: 4px 16px; font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px;">SALE TAX COPY</div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px; font-weight: bold;">
+        <tr>
+          <td style="color: #000080;">LORRY No.</td>
+          <td style="border-bottom: 1px solid #000; color: #d32f2f; font-size: 14px; padding-left: 5px;" id="printVehNo">-</td>
+        </tr>
+        <tr>
+          <td style="color: #000080; padding-top: 5px;">No.</td>
+          <td style="border-bottom: 1px solid #000; color: #d32f2f; font-size: 14px; font-weight: 900; padding: 5px 0 0 5px;" id="printBillNo">-</td>
+        </tr>
+        <tr>
+          <td style="color: #000080; padding-top: 5px;">Date</td>
+          <td style="border-bottom: 1px solid #000; padding: 5px 0 0 5px;" id="printBillDate">-</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Consignor / Consignee Section -->
+  <div style="display: flex; border: 1px solid #000; border-bottom: none;">
+    <div style="flex: 1; padding: 8px; border-right: 1px solid #000; position: relative;">
+      <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; position: absolute; top: 8px; left: 8px; color: #666;">CONSIGNOR</span>
+      <p id="printConsignor" style="margin: 20px 0 0 0; font-weight: 700; font-size: 14px;">-</p>
+      <p id="printOrigin" style="font-size: 12px; font-weight: 600;">-</p>
+    </div>
+    <div style="flex: 1; padding: 8px; position: relative;">
+      <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; position: absolute; top: 8px; left: 8px; color: #666;">CONSIGNEE</span>
+      <p id="printConsignee" style="margin: 20px 0 0 0; font-weight: 700; font-size: 14px;">-</p>
+      <p id="printDest" style="font-size: 12px; font-weight: 600;">-</p>
+    </div>
+  </div>
+
+  <!-- Main Details Table -->
+  <table style="width: 100%; border-collapse: collapse; border: 2px solid #000; text-align: center; font-size: 13px;">
+    <thead>
+      <tr style="border-bottom: 1px solid #000; background: #fff;">
+        <th style="padding: 6px; border-right: 1px solid #000; font-weight: 700;">No. Of Pkgs.</th>
+        <th style="padding: 6px; border-right: 1px solid #000; font-weight: 700; width: 40%;">Description (said to contain)</th>
+        <th style="padding: 6px; border-right: 1px solid #000; font-weight: 700;">Weight Actual</th>
+        <th style="padding: 6px; border-right: 1px solid #000; font-weight: 700;">Rate Rs.</th>
+        <th style="padding: 6px; font-weight: 700;">FREIGHT</th>
+      </tr>
+    </thead>
+    <tbody style="vertical-align: top;">
+      <tr style="height: 120px;">
+        <td style="padding: 10px; border-right: 1px solid #000;" id="printPkgs">1</td>
+        <td style="padding: 10px; border-right: 1px solid #000; text-align: left;">
+          <strong id="printLoadTitle">Transportation Cargo</strong><br>
+          <span style="font-size:11px;" id="printBoxBrand"></span>
+        </td>
+        <td style="padding: 10px; border-right: 1px solid #000;" id="printWeight">-</td>
+        <td style="padding: 10px; border-right: 1px solid #000;" id="printRate">-</td>
+        <td style="padding: 10px; font-weight: 800; color: #000;" id="printFreight">-</td>
+      </tr>
+      <!-- Pricing Adjustments -->
+      <tr style="border-top: 1px solid #000;">
+        <td colspan="4" style="text-align: right; padding: 6px 12px; border-right: 1px solid #000; font-weight: 700;">Advance Paid (-)</td>
+        <td style="padding: 6px 10px;" id="printAdvance">-</td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: right; padding: 6px 12px; border-right: 1px solid #000; font-weight: 700;">Other Charges (+)</td>
+        <td style="padding: 6px 10px;" id="printOther">-</td>
+      </tr>
+      <tr>
+        <td colspan="4" style="text-align: right; padding: 6px 12px; border-right: 1px solid #000; font-weight: 800;">TO PAY BALANCE</td>
+        <td style="padding: 6px 10px; font-weight: 900; font-size: 15px;" id="printTotal">-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- T&C and Signature -->
+  <div style="display: flex; margin-top: 5px; border: 1px solid #000;">
+    <div style="flex: 2; padding: 8px; border-right: 1px solid #000; font-size: 10px;">
+      <p style="margin: 0; font-weight: 700;">Goods booked are subject to term & conditions overleaf.</p>
+      <p style="margin: 2px 0 0 0;">Not responsible for leakage, breakage, fire, damage & theft.</p>
+    </div>
+    <div style="flex: 1.5; padding: 8px; border-right: 1px solid #000; position: relative;">
+      <span style="position: absolute; bottom: 8px; left: 8px; font-weight: 700; font-size: 12px;">Pl. pay to Truck Driver. Rs. ..................</span>
+    </div>
+    <div style="flex: 1.5; padding: 8px; text-align: center; position: relative;">
+      <span style="font-weight: 700; font-size: 11px;">For DHILLON ROADLINES</span>
+      <br><br><br>
+      <span style="font-size: 10px; color: #666;">Auth. Signatory</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: UPDATE AVAILABLE -->
+<div id="modalUpdate" class="modal-overlay hidden">
+  <div class="modal-card" style="max-width: 400px; text-align: center; padding: 40px 30px;">
+    <div style="background: #fff5f6; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff3e60" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    </div>
+    <h2 style="font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 12px;">Update Available</h2>
+    <p style="color: #64748b; font-size: 14px; margin-bottom: 24px; line-height: 1.5;">
+      A new version (<span id="updVersionText">1.0.2</span>) is ready for download. Please update to manage your fleet with the latest features.
+    </p>
+    <div id="updNotes" style="background: #f8fafc; padding: 12px; border-radius: 10px; font-size: 12px; color: #475569; text-align: left; margin-bottom: 32px; border: 1px solid #f1f5f9;">
+      <strong>What's New:</strong><br>
+      <span id="updNotesText">- Performance improvements and UI refinements.</span>
+    </div>
+
+    <!-- Download Progress UI -->
+    <div id="updProgressContainer" class="hidden" style="margin-bottom: 32px;">
+      <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px; color: #64748b; font-weight: 700; text-transform: uppercase;">
+        <span id="updStatusLabel">Downloading update...</span>
+        <span id="updPercentText">0%</span>
+      </div>
+      <div style="height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0;">
+        <div id="updProgressBar" style="width: 0%; height: 100%; background: #ff3e60; transition: width 0.2s ease;"></div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn-ghost" style="flex: 1;" onclick="closeModal('modalUpdate')">Later</button>
+      <button id="btnDoUpdate" class="btn-primary hover-scale" style="flex: 1.5;">Update Now</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

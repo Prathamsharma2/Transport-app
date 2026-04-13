@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport System - Ready for Frontend</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f1117;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 { color: #ff3e60; margin-bottom: 20px; }
+        p { color: #a0a0a0; line-height: 1.6; }
+        .status { margin-top: 30px; font-weight: bold; color: #4caf50; }
+        .badge { display: inline-block; padding: 5px 15px; border-radius: 50px; background: #4caf50; color: white; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Transport System</h1>
+        <p>The client frontend has been successfully reset. The backend has been refactored into a modern MVC architecture and is ready for the new React/Electron UI.</p>
+        <div class="status">
+            <span class="badge">Backend Ready</span>
+            <p>API Running on PORT 3000</p>
+        </div>
+        <p style="font-size: 0.9rem; margin-top: 40px; color: #666;">
+            Admin Panel is accessible via <b>Ctrl + Shift + A</b>
+        </p>
+    </div>
+</body>
+</html>

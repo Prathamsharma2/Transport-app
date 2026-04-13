@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DHILLON ROADLINES — Superadmin Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    :root {
+      --bg:      #0b0d14;
+      --sidebar: #0f1119;
+      --card:    #13151f;
+      --border:  #1e2130;
+      --purple:  #7c3aed;
+      --purple2: #6d28d9;
+      --indigo:  #4f46e5;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --green:   #10b981;
+      --red:     #ef4444;
+      --input:   #0d0f18;
+    }
+    html,body { height:100%; font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); overflow:hidden; }
+
+    /* LAYOUT */
+    .app { display:flex; height:100vh; }
+
+    .sidebar {
+      width:240px; background:var(--sidebar);
+      border-right:1px solid var(--border);
+      display:flex; flex-direction:column; padding:0; overflow:hidden;
+    }
+    .sidebar-brand { padding:24px 20px; border-bottom:1px solid var(--border); }
+    .brand-row { display:flex; align-items:center; gap:12px; }
+    .brand-icon {
+      width:40px;height:40px;
+      background:linear-gradient(135deg,var(--purple),var(--indigo));
+      border-radius:12px; display:flex;align-items:center;justify-content:center;
+      font-size:20px; box-shadow:0 4px 12px rgba(124,58,237,.3);
+    }
+    .brand-text h2 { font-size:13px; font-weight:800; letter-spacing:.5px; }
+
+    .nav-section { padding:20px 20px 8px; font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; }
+    .nav-item {
+      display:flex; align-items:center; gap:12px; padding:12px 20px;
+      font-size:14px; color:var(--muted); cursor:pointer;
+      border-radius:10px; margin:2px 10px; transition:all .15s;
+    }
+    .nav-item:hover { background:rgba(124,58,237,.1); color:var(--text); }
+    .nav-item.active { background:rgba(124,58,237,.15); color:#a78bfa; font-weight:600; }
+
+    /* MAIN */
+    .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .topbar { height:60px; background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 32px; }
+    .topbar-title { font-size:16px; font-weight:700; }
+
+    .content { flex:1; overflow-y:auto; padding:32px; }
+    .page { display:none; }
+    .page.active { display:block; }
+
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; }
+    .card-title { font-size:15px; font-weight:700; margin-bottom:20px; }
+
+    .form-grid { display:grid; gap:16px; }
+    .form-2 { grid-template-columns: 1fr 1fr; }
+    
+    label { display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
+    input, select {
+      width:100%; background:var(--input); border:1px solid var(--border); border-radius:10px;
+      color:var(--text); padding:12px 16px; font-family:inherit; outline:none;
+    }
+    input:focus { border-color:var(--purple); box-shadow:0 0 0 4px rgba(124,58,237,.1); }
+
+    .btn { border:none; border-radius:10px; font-weight:700; padding:12px 24px; cursor:pointer; transition:all .15s; }
+    .btn:active { transform:scale(0.97); }
+    .btn-primary { background:var(--purple); color:#fff; }
+    .btn-success { background:var(--green); color:#fff; }
+    .btn-danger  { background:var(--red); color:#fff; }
+
+    /* TABLE */
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; padding:12px; color:var(--muted); font-size:11px; border-bottom:1px solid var(--border); }
+    td { padding:14px 12px; border-bottom:1px solid var(--border); font-size:14px; }
+    tr:hover td { background:rgba(255,255,255,.02); }
+
+    #toast {
+      position:fixed; bottom:30px; right:30px;
+      background:var(--green); color:#fff; padding:12px 24px; border-radius:12px;
+      font-weight:600; opacity:0; transform:translateY(10px); transition:all .3s; z-index:9999;
+    }
+    #toast.show { opacity:1; transform:translateY(0); }
+    #toast.err  { background:var(--red); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-row">
+        <div class="brand-icon">🚛</div>
+        <div class="brand-text"><h2>Superadmin Console</h2></div>
+      </div>
+    </div>
+    <div class="nav-section">Controls</div>
+    <div class="nav-item active" onclick="showPage('updates', this)">🔔 Updates</div>
+    <div class="nav-item" onclick="showPage('users', this)">👥 Manage Users</div>
+    <div class="nav-item" style="margin-top:auto; color:var(--red);" onclick="logoutAdmin()">🚪 Sign Out</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar"><span class="topbar-title" id="pageTitle">Push Update Notifications</span></div>
+    <div class="content">
+      
+      <!-- UPDATES -->
+      <div class="page active" id="page-updates">
+        <div class="card">
+          <div class="card-title">🚀 Send New Update</div>
+          <div class="form-grid">
+            <div class="form-2" style="grid-template-columns: 1fr 1fr 1fr;">
+              <div><label>Version Number</label><input id="upVersion" placeholder="e.g. 1.0.2"></div>
+              <div><label>Platform</label><select id="upPlatform"><option value="win">Windows (.exe)</option><option value="mac">macOS (.dmg)</option></select></div>
+              <div><label>Download Link</label><input id="upUrl" placeholder="Direct URL to Installer"></div>
+            </div>
+            <div><label>Release Notes (App pe dikhega)</label><input id="upMessage" placeholder="Kya naya hai is version mein?"></div>
+            <button class="btn btn-primary" onclick="sendUpdate()">🚀 PUSH UPDATE TO ALL CLIENTS</button>
+          </div>
+        </div>
+        <div class="card">
+          <table><thead><tr><th>Version</th><th>Platform</th><th>Notes</th><th>Released At</th></tr></thead>
+          <tbody id="historyTable"></tbody></table>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="page-users">
+        <div class="card">
+          <div class="card-title">👥 All App Users</div>
+          <table><thead><tr><th>ID</th><th>Username</th><th>Role</th><th>Action</th></tr></thead>
+          <tbody id="usersTable"></tbody></table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const adminDb = require('./admin-db');
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('pageTitle').textContent = name === 'updates' ? 'Push Update Notifications' : 'Manage App Users';
+  
+  if(name === 'updates') loadHistory();
+  if(name === 'users') loadUsers();
+}
+
+function toast(msg, isErr=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (isErr ? ' err' : '');
+  setTimeout(() => t.className = '', 3000);
+}
+
+async function sendUpdate() {
+  const v = document.getElementById('upVersion').value;
+  const m = document.getElementById('upMessage').value;
+  const u = document.getElementById('upUrl').value;
+  const p = document.getElementById('upPlatform').value;
+  if(!v || !m || !u) return toast('All fields required for update push', true);
+
+  try {
+    await adminDb.pushUpdate(v, m, u, p);
+    toast('✅ Update pushed successfully!');
+    loadHistory();
+  } catch(e) { toast('Error: ' + e.message, true); }
+}
+
+async function loadHistory() {
+  try {
+    const rows = await adminDb.getUpdateHistory();
+    const tbody = document.getElementById('historyTable');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><strong>v${r.version}</strong></td>
+        <td><span style="font-size:10px; padding:3px 6px; background:#1e2130; border-radius:4px; text-transform:uppercase;">${r.platform}</span></td>
+        <td>${r.release_notes}</td>
+        <td style="color:var(--muted)">${new Date(r.created_at).toLocaleString()}</td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function loadUsers() {
+  try {
+    const rows = await adminDb.getUsers();
+    const tbody = document.getElementById('usersTable');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="color:var(--muted)">#${r.id}</td>
+        <td><strong>${r.username}</strong></td>
+        <td style="text-transform:uppercase; font-size:11px; font-weight:800;">${r.role}</td>
+        <td><button class="btn btn-danger" style="padding:6px 12px; font-size:12px;" onclick="deleteUser(${r.id})">Delete</button></td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function deleteUser(id) {
+  if(!confirm('User delete kar dein?')) return;
+  try {
+    await adminDb.deleteUser(id);
+    toast('User deleted');
+    loadUsers();
+  } catch(e) { toast('Error', true); }
+}
+
+function logoutAdmin() {
+  localStorage.removeItem('currentUser');
+  window.location = 'admin-login.html';
+}
+
+window.onload = loadHistory;
+</script>
+</body>
+</html>

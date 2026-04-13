@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dhillon Roadlines — Admin Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0b0d14;
+      --card: #0f1119;
+      --border: #1e2130;
+      --red: #ef4444;
+      --red-hover: #dc2626;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --input: #0d0f18;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 380px;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .icon-box {
+      width: 54px; height: 54px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      font-size: 24px;
+    }
+
+    h1 { font-size: 18px; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.5px; }
+    p { font-size: 11px; color: var(--muted); margin-bottom: 30px; letter-spacing: 0.5px; }
+
+    .field { text-align: left; margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 10px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-family: inherit; font-size: 14px;
+      outline: none; transition: all 0.2s;
+    }
+    input:focus { border-color: var(--red); box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--red);
+      color: white; border: none; border-radius: 10px;
+      padding: 14px; font-weight: 700; font-size: 14px;
+      cursor: pointer; transition: all 0.2s;
+      margin-top: 10px;
+      box-shadow: 0 8px 16px rgba(239, 68, 68, 0.25);
+    }
+    .btn-submit:hover { background: var(--red-hover); transform: translateY(-1px); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    #errorMsg {
+      margin-top: 18px; font-size: 12px; font-weight: 600; color: var(--red);
+      display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="icon-box">🛡️</div>
+  <h1>Private Admin Tool</h1>
+  <p>Developer access only</p>
+
+  <div class="field">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="admin">
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="••••••••">
+  </div>
+
+  <button class="btn-submit" onclick="doLogin()">Sign In to Dashboard</button>
+
+  <div id="errorMsg">❌ Wrong username or password</div>
+</div>
+
+<script>
+function doLogin() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const err = document.getElementById('errorMsg');
+
+  if (u === 'admin' && p === 'admin') {
+    // success! set localstorage and redirect
+    localStorage.setItem('currentUser', JSON.stringify({id: 0, username: 'admin', role: 'admin'}));
+    window.location = 'admin-index.html';
+  } else {
+    err.style.display = 'block';
+    setTimeout(() => { err.style.display = 'none'; }, 3000);
+  }
+}
+
+// Enter key support
+document.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+
+</body>
+</html>

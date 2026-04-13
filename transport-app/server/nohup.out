@@ -1,0 +1,39 @@
+--- [DEBUG] Server starting ---
+--- [DEBUG] Dotenv loaded ---
+--- [DEBUG] Modules required ---
+--- [DEBUG] DB Config starting ---
+--- [DEBUG] DB Dotenv loaded ---
+--- [DEBUG] Database module loaded ---
+--- [DEBUG] Routes loaded ---
+🚀 Server is listening on http://localhost:4000
+--- Initializing Database (MySQL Hostinger) ---
+--- 🛡️ Connecting to MySQL (Hostinger Cloud) ---
+--- 🚀 Connection Successful. Initializing Schema ---
+--- ✅ Database Fully Synchronized ---
+✅ Database synchronized successfully
+--- [DEBUG] Server starting ---
+--- [DEBUG] Dotenv loaded ---
+--- [DEBUG] Modules required ---
+--- [DEBUG] DB Config starting ---
+--- [DEBUG] DB Dotenv loaded ---
+--- [DEBUG] Database module loaded ---
+--- [DEBUG] Routes loaded ---
+🚀 Server is listening on http://localhost:4000
+--- Initializing Database (MySQL Hostinger) ---
+--- 🛡️ Connecting to MySQL (Hostinger Cloud) ---
+--- 🚀 Connection Successful. Initializing Schema ---
+--- ✅ Database Fully Synchronized ---
+✅ Database synchronized successfully
+--- [DEBUG] Server starting ---
+--- [DEBUG] Dotenv loaded ---
+--- [DEBUG] Modules required ---
+--- [DEBUG] DB Config starting ---
+--- [DEBUG] DB Dotenv loaded ---
+--- [DEBUG] Database module loaded ---
+--- [DEBUG] Routes loaded ---
+🚀 Server is listening on http://localhost:4000
+--- Initializing Database (MySQL Hostinger) ---
+--- 🛡️ Connecting to MySQL (Hostinger Cloud) ---
+--- 🚀 Connection Successful. Initializing Schema ---
+--- ✅ Database Fully Synchronized ---
+✅ Database synchronized successfully
