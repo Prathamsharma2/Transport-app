@@ -9,16 +9,22 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: transport-app
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          path: .  # Checkout to root
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+          cache-dependency-path: transport-app/package-lock.json
 
       - name: Install Dependencies
         run: npm install
@@ -26,12 +32,11 @@ jobs:
       - name: Build Windows Installer
         run: npm run build:win
         env:
-          # If electron-builder needs a GitHub token for publishing, add it here
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Installer Artifact
         uses: actions/upload-artifact@v4
         with:
           name: tms-setup-exe
-          path: dist/tms-setup.exe
+          path: transport-app/dist/tms-setup.exe
           if-no-files-found: error
