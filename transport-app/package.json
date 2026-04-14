@@ -1,6 +1,6 @@
 {
   "name": "transport-app",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -59,6 +59,12 @@
     },
     "win": {
       "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
     },
     "publish": [
       {

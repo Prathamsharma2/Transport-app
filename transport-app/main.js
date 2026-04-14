@@ -47,12 +47,19 @@ const downloadFile = (url, filename, event) => {
   const tempPath = path.join(app.getPath('temp'), filename);
   const file = fs.createWriteStream(tempPath);
 
-  https.get(url, (response) => {
+  const options = {
+    headers: {
+      'User-Agent': 'TransportSystem/1.0'
+    }
+  };
+
+  https.get(url, options, (response) => {
     // Handle Redirection
-    if (response.statusCode === 302 || response.statusCode === 301) {
+    if (response.statusCode === 302 || response.statusCode === 301 || response.statusCode === 303 || response.statusCode === 307) {
       file.close();
       fs.unlink(tempPath, () => {});
-      downloadFile(response.headers.location, filename, event);
+      const redirectUrl = new URL(response.headers.location, url).href;
+      downloadFile(redirectUrl, filename, event);
       return;
     }
 
@@ -98,7 +105,7 @@ ipcMain.on('download-update', (event, { url, filename }) => {
 ipcMain.on('install-update', (event, filePath) => {
   // Open installer (DMG on Mac, EXE on Windows)
   shell.openPath(filePath);
-  setTimeout(() => { app.quit(); }, 1500);
+  setTimeout(() => { app.exit(0); }, 1000); // Forces the app to close immediately
 });
 
 function openAdminPanel() {
