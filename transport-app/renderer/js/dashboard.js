@@ -9,7 +9,7 @@ const { ipcRenderer } = require('electron');
 // ─────────────────────────────────────────────────────────────────
 // CONSTANTS & STATE
 // ─────────────────────────────────────────────────────────────────
-const APP_VERSION = '2.2.0';
+const APP_VERSION = '2.3.0';
 const PLATFORM = window.navigator.platform.toLowerCase().includes('mac') ? 'mac' : 'win';
 
 // Auth check – use Supabase session
