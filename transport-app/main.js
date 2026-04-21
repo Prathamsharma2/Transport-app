@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const { app, BrowserWindow, Menu, globalShortcut, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
@@ -13,8 +14,14 @@ try {
 }
 
 // Ensure single instance
+console.log('[Main] Checking single instance lock...');
 const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) { app.quit(); }
+if (!gotTheLock) { 
+  console.log('[Main] Did not get lock. Quitting...');
+  app.quit(); 
+} else {
+  console.log('[Main] Got lock. Proceeding...');
+}
 
 let adminWindow = null;
 let mainWindow = null;
@@ -33,7 +40,21 @@ function createWindow() {
     }
   });
 
+  console.log('[Main] Loading login.html...');
   mainWindow.loadFile(path.join(__dirname, 'renderer/login.html'));
+
+  console.log('[Main] Opening DevTools...');
+  // Auto-open DevTools in dev for debugging
+  mainWindow.webContents.openDevTools({ mode: 'detach' });
+
+  mainWindow.webContents.on('did-fail-load', (e, code, desc) => {
+    console.error('[Renderer] Load failed:', code, desc);
+  });
+
+  mainWindow.webContents.on('console-message', (e, level, msg) => {
+    console.log('[Renderer]', msg);
+  });
+
 
   mainWindow.webContents.on('will-navigate', (event, url) => {
     if (!url.startsWith('file://')) event.preventDefault();
@@ -155,7 +176,9 @@ function buildMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
+console.log('[Main] Registering app ready handler...');
 app.whenReady().then(() => {
+  console.log('[Main] App is ready! Creating window...');
   buildMenu();
   createWindow();
 

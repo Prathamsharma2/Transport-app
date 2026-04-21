@@ -1,26 +1,23 @@
-/**
- * supabase-client.js
- * Uses the locally installed @supabase/supabase-js package via require()
- * Works because nodeIntegration: true in Electron.
- */
-const { createClient } = require('@supabase/supabase-js');
+/* renderer/js/supabase-client.js — Singleton with fallback hardcoded keys */
+'use strict';
 
-const SUPABASE_URL = 'https://ebmfpoqphhoukiuyjbus.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVibWZwb3FwaGhvdWtpdXlqYnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mjg4MjgsImV4cCI6MjA5MTMwNDgyOH0.Y26zM-qQSF_1PxQP_6sqUa9Evk1doZucaFM557cbg3Y';
+// Use window.supabase loaded via CDN in index.html to bypass Electron nodeIntegration bugs
+const createClient = window.supabase ? window.supabase.createClient : null;
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        storage: window.localStorage
-    }
-});
-
-function usernameToEmail(username) {
-    return `${username.trim().toLowerCase()}@dhillonroadlines.local`;
+if (!createClient) {
+  console.error('[Supabase] window.supabase not found. Ensure CDN script is loaded.');
 }
 
-window._supabase = supabase;
-window._usernameToEmail = usernameToEmail;
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ebmfpoqphhoukiuyjbus.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVibWZwb3FwaGhvdWtpdXlqYnVzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTcyODgyOCwiZXhwIjoyMDkxMzA0ODI4fQ.HLiSdJ0w65tKZlet1-cWXCzDTMHbvJRH4a-8DStPOGc';
 
-console.log('✅ Supabase client initialized via require()');
+const supabase = createClient ? createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+    detectSessionInUrl: false
+  }
+}) : null;
+
+module.exports = { supabase };

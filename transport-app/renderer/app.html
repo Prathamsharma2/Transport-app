@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DHILLON ROADLINES — TMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <!-- Supabase CDN to bypass Electron Node require module errors -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+<div id="app-root">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand-name"><i data-lucide="truck" class="icon-inline"></i> DHILLON ROADLINES</div>
+      <div class="brand-sub">Transport Management System</div>
+    </div>
+    <div class="nav-section-label">Operations</div>
+    <div id="nav-items"><!-- Built by router.js --></div>
+    <div class="sidebar-footer">
+      <div class="nav-item" id="logout-btn" style="color:var(--red);">
+        <i data-lucide="log-out" class="nav-icon"></i> Sign Out
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN AREA ══ -->
+  <div id="main-area">
+
+    <!-- Topbar -->
+    <header id="topbar">
+      <span class="topbar-title" id="topbar-title">📊 Dashboard</span>
+      <div class="topbar-actions">
+        <span id="topbar-user" style="font-size:12px;color:var(--text-secondary);"></span>
+        <div class="user-avatar" id="user-avatar" title="User">D</div>
+      </div>
+    </header>
+
+    <!-- Global Sticky Filter Bar -->
+    <div class="filter-bar" id="global-filter-bar">
+      <!-- Populated by filters.js -->
+      <span style="color:var(--text-muted);font-size:12px;">Loading filters…</span>
+    </div>
+
+    <!-- Content Area -->
+    <main id="content-area">
+
+      <!-- ══ PAGE: DASHBOARD ══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1 class="page-title">Dashboard</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="navigate('trips')" id="btn-new-trip">+ New Trip</button>
+          </div>
+        </div>
+        <!-- KPI Cards -->
+        <div class="kpi-grid" id="dash-kpi-grid">
+          <div class="kpi-card skeleton kpi-card-skeleton" style="--kpi-color:var(--accent);">&nbsp;</div>
+          <div class="kpi-card skeleton kpi-card-skeleton" style="--kpi-color:var(--red);">&nbsp;</div>
+          <div class="kpi-card skeleton kpi-card-skeleton" style="--kpi-color:var(--green);">&nbsp;</div>
+          <div class="kpi-card skeleton kpi-card-skeleton" style="--kpi-color:var(--blue);">&nbsp;</div>
+          <div class="kpi-card skeleton kpi-card-skeleton" style="--kpi-color:var(--purple);">&nbsp;</div>
+        </div>
+        <!-- Charts -->
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="bar-chart-2" class="icon-inline"></i> Monthly Revenue vs Expenses</div>
+            <div class="chart-container"><canvas id="chart-monthly"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="trending-up" class="icon-inline"></i> Vehicle Performance (Net Profit)</div>
+            <div class="chart-container"><canvas id="chart-vehicles"></canvas></div>
+          </div>
+        </div>
+        <!-- Recent Trips -->
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="clock" class="icon-inline"></i> Recent Trips</span>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('trips')">View All →</button>
+          </div>
+          <div class="table-scroll">
+            <table id="dash-recent-trips">
+              <thead><tr><th>Date</th><th>Route</th><th>Vehicle</th><th>Freight</th><th>Expenses</th><th>Net Profit</th><th>Status</th></tr></thead>
+              <tbody id="dash-trips-body"><tr><td colspan="7" class="text-center" style="padding:24px;color:var(--text-muted);">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ══ PAGE: TRIPS ══ -->
+      <div class="page" id="page-trips">
+        <!-- Create Trip Form (always visible at top) -->
+        <div id="trips-form-view" style="margin-bottom:24px;">
+          <div class="table-toolbar" style="background:var(--bg-surface);border-radius:12px 12px 0 0;border:1px solid var(--border);border-bottom:none;">
+            <span class="table-toolbar-title" id="trips-form-title"><i data-lucide="plus-circle" class="icon-inline"></i> Create New Trip</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost btn-sm" onclick="window.tripsModule?.showListView()">Clear / Reset</button>
+              <button class="btn btn-primary btn-sm" onclick="window.tripsModule?.saveTrip()"><i data-lucide="save" class="icon-inline" style="width:14px;height:14px;"></i> Save Trip</button>
+            </div>
+          </div>
+          <div class="form-grid" style="background:var(--bg-surface);padding:20px;border-radius:0 0 12px 12px;border:1px solid var(--border);">
+            <input type="hidden" id="t-edit-id">
+            <div class="form-group"><label class="form-label">Trip Date</label><input class="form-control" type="date" id="t-date"></div>
+            <div class="form-group"><label class="form-label">GR Number</label><input class="form-control" id="t-gr" placeholder="GR/LR number"></div>
+            <div class="form-group"><label class="form-label">Company / Party</label><select class="form-control" id="t-company"><option value="">No company</option></select></div>
+            <div class="form-group"><label class="form-label">Consignor</label><input class="form-control" id="t-consignor" placeholder="Sender Name"></div>
+            <div class="form-group"><label class="form-label">Consignee</label><input class="form-control" id="t-consignee" placeholder="Receiver Name"></div>
+            <div class="form-group"><label class="form-label">From Location</label><input class="form-control" id="t-from" placeholder="Origin"></div>
+            <div class="form-group"><label class="form-label">To Location</label><input class="form-control" id="t-to" placeholder="Destination"></div>
+            <div class="form-group"><label class="form-label">Freight Amount (&#8377;)</label><input class="form-control" type="number" id="t-freight" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Advance (&#8377;)</label><input class="form-control" type="number" id="t-advance" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Surcharge (&#8377;)</label><input class="form-control" type="number" id="t-surcharge" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Shortage (&#8377;)</label><input class="form-control" type="number" id="t-shortage" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Weight (kg)</label><input class="form-control" type="number" id="t-weight" placeholder="0"></div>
+            <div class="form-group">
+              <label class="form-label">Vehicle</label>
+              <div class="searchable-select">
+                <input type="text" class="form-control select-search" id="t-vehicle-search" placeholder="Search truck..." oninput="window.tripsModule?.onSearchVehicle(this.value)">
+                <div class="search-suggestions" id="t-vehicle-suggestions"></div>
+                <select class="form-control" id="t-vehicle" style="display:none;"><option value="">Unassigned</option></select>
+                <div id="t-vehicle-selected-label" class="selected-item-pill" style="display:none;"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Driver</label>
+              <div class="searchable-select">
+                <input type="text" class="form-control select-search" id="t-driver-search" placeholder="Search driver..." oninput="window.tripsModule?.onSearchDriver(this.value)">
+                <div class="search-suggestions" id="t-driver-suggestions"></div>
+                <select class="form-control" id="t-driver" style="display:none;"><option value="">Unassigned</option></select>
+                <div id="t-driver-selected-label" class="selected-item-pill" style="display:none;"></div>
+              </div>
+            </div>
+            <div class="form-group"><label class="form-label">Goods Description</label><input class="form-control" id="t-goods" placeholder="e.g. Cement, Steel, Empty…"></div>
+            <div class="form-group"><label class="form-label">Status</label><select class="form-control" id="t-status"><option value="pending">Pending</option><option value="Assigned">Assigned</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></div>
+          </div>
+        </div>
+
+        <!-- Trip Table (always visible below) -->
+        <div id="trips-list-view">
+          <div class="page-header" style="margin-bottom:12px;">
+            <h1 class="page-title"><i data-lucide="truck" class="icon-inline"></i> All Trips</h1>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <div class="search-input-wrap">
+                <i data-lucide="search" class="search-icon"></i>
+                <input class="search-input" id="trips-search" placeholder="Search trips, trucks, drivers…" oninput="window.tripsModule?.onSearch(this.value)">
+              </div>
+              <div class="sort-wrap">
+                <span class="sort-label">Sort:</span>
+                <select class="form-control sort-select" id="trips-sort" onchange="window.tripsModule?.load()">
+                  <option value="trip_date-desc">Trip Date (New→Old)</option>
+                  <option value="trip_date-asc">Trip Date (Old→New)</option>
+                  <option value="freight_amount-desc">Price: High to Low</option>
+                  <option value="freight_amount-asc">Price: Low to High</option>
+                  <option value="created_at-desc">Recently Created</option>
+                </select>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="window.tripsModule?.exportCSV()">&#11015; Export CSV</button>
+            </div>
+          </div>
+          <div class="status-steps">
+            <div class="status-step"><i data-lucide="clipboard" class="icon-inline"></i> Pending</div>
+            <div class="status-step"><i data-lucide="link" class="icon-inline"></i> Assigned</div>
+            <div class="status-step"><i data-lucide="truck" class="icon-inline"></i> In Progress</div>
+            <div class="status-step"><i data-lucide="check-circle" class="icon-inline"></i> Completed</div>
+          </div>
+          <div class="table-wrapper">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>#</th><th>Date</th><th>Company</th><th>GR No</th><th>Consignor</th><th>Consignee</th><th>Route</th><th>Vehicle</th><th>Driver</th><th>Freight</th><th>Expenses</th><th>Net Profit</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="trips-table-body"><tr><td colspan="14" style="padding:32px;text-align:center;color:var(--text-muted);">Loading&#x2026;</td></tr></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="trips-pagination"></div>
+          </div>
+        </div>
+
+        <div id="trips-modal-container"></div>
+        <div id="trip-details-container"></div>
+      </div>
+
+
+      <!-- ══ PAGE: EXPENSES ══ -->
+      <div class="page" id="page-expenses">
+        <div class="page-header">
+          <h1 class="page-title">Expense Manager</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="window.expensesModule?.openAddModal()">+ Add Expense</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="exp-kpi-grid"></div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="pie-chart" class="icon-inline"></i> Expense by Category</div>
+            <div class="chart-container"><canvas id="chart-exp-category"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="calendar" class="icon-inline"></i> Monthly Expense Trend</div>
+            <div class="chart-container"><canvas id="chart-exp-monthly"></canvas></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="banknote" class="icon-inline"></i> Expense History</span>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="sort-wrap">
+                <span class="sort-label">Sort:</span>
+                <select class="form-control sort-select" id="expenses-sort" onchange="window.expensesModule?.fetchExpenses()">
+                  <option value="date-desc">Date (New→Old)</option>
+                  <option value="date-asc">Date (Old→New)</option>
+                  <option value="amount-desc">Price: High to Low</option>
+                </select>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="window.expensesModule?.exportCSV()"><i data-lucide="download" class="icon-inline"></i> Export</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#</th><th>Date</th><th>Category</th><th>Trip</th><th>Amount</th><th>Vendor</th><th>Notes</th><th>Actions</th></tr></thead>
+              <tbody id="expenses-table-body"><tr><td colspan="8" style="padding:32px;text-align:center;color:var(--text-muted);">Loading…</td></tr></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="expenses-pagination"></div>
+        </div>
+        <div id="expenses-modal-container"></div>
+      </div>
+
+      <!-- ══ PAGE: VEHICLES ══ -->
+      <div class="page" id="page-vehicles">
+        <div class="page-header">
+          <h1 class="page-title"><i data-lucide="truck" class="icon-inline"></i> Vehicles Inventory</h1>
+          <div class="page-actions" style="display:flex;gap:12px;align-items:center;">
+            <div class="search-input-wrap">
+              <i data-lucide="search" class="search-icon"></i>
+              <input class="search-input" id="vehicles-search-input" placeholder="Search trucks…" oninput="window.vehiclesModule?.onSearch(this.value)">
+            </div>
+            <select class="form-control" id="vehicles-sort" style="width:140px; font-size:11px; height:32px;" onchange="window.vehiclesModule?.load()">
+              <option value="vehicle_number-asc">A to Z</option>
+              <option value="vehicle_number-desc">Z to A</option>
+              <option value="capacity-desc">High Capacity</option>
+              <option value="created_at-desc">Newest Added</option>
+            </select>
+            <button class="btn btn-primary" onclick="window.vehiclesModule?.openVehicleModal()">+ Add Vehicle</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; margin-top:20px;" id="vehicles-grid">
+           <!-- Loaded by vehicles.js -->
+        </div>
+        <div id="vehicles-modal-container"></div>
+      </div>
+
+      <!-- ══ PAGE: DRIVERS ══ -->
+      <div class="page" id="page-drivers">
+        <div class="page-header">
+          <h1 class="page-title"><i data-lucide="users" class="icon-inline"></i> Drivers Directory</h1>
+          <div class="page-actions" style="display:flex;gap:12px;align-items:center;">
+            <div class="search-input-wrap">
+              <i data-lucide="search" class="search-icon"></i>
+              <input class="search-input" id="drivers-search-input" placeholder="Search drivers…" oninput="window.driversModule?.onSearch(this.value)">
+            </div>
+            <select class="form-control" id="drivers-sort" style="width:140px; font-size:11px; height:32px;" onchange="window.driversModule?.load()">
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+              <option value="created_at-desc">Newest Added</option>
+            </select>
+            <button class="btn btn-primary" onclick="window.driversModule?.openDriverModal()">+ Add Driver</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; margin-top:20px;" id="drivers-grid">
+           <!-- Loaded by drivers.js -->
+        </div>
+        <div id="drivers-modal-container"></div>
+      </div>
+
+      <!-- ══ PAGE: LEDGER ══ -->
+      <div class="page" id="page-ledger">
+        <div class="page-header">
+          <h1 class="page-title">Company Ledger</h1>
+          <div class="page-actions">
+            <select class="form-control" id="ledger-company-select" style="width:220px;" onchange="window.ledgerModule?.loadCompany(this.value)">
+              <option value="">Select Company…</option>
+            </select>
+            <div class="sort-wrap">
+              <span class="sort-label">Sort:</span>
+              <select class="form-control sort-select" id="ledger-sort" onchange="window.ledgerModule?.refresh()">
+                <option value="trip_date-desc">Date (New→Old)</option>
+                <option value="trip_date-asc">Date (Old→New)</option>
+                <option value="freight_amount-desc">Price: High to Low</option>
+              </select>
+            </div>
+            <button class="btn btn-ghost" onclick="window.ledgerModule?.openAddCompanyModal()">+ Add Company</button>
+            <button class="btn btn-danger btn-ghost" onclick="window.ledgerModule?.deleteCompany(document.getElementById('ledger-company-select').value)"><i data-lucide="trash-2" class="icon-inline"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ledgerModule?.exportCSV()">⬇ Export</button>
+          </div>
+        </div>
+        <!-- Summary Strip -->
+        <div class="summary-strip" id="ledger-summary" style="display:none;">
+          <div class="summary-item"><div class="summary-label">Total Freight</div><div class="summary-value" id="ls-freight" style="color:var(--accent);">₹0</div></div>
+          <div class="summary-item"><div class="summary-label">Payment Received</div><div class="summary-value" id="ls-received" style="color:var(--green);">₹0</div></div>
+          <div class="summary-item"><div class="summary-label">Outstanding Balance</div><div class="summary-value" id="ls-outstanding" style="color:var(--red);">₹0</div></div>
+          <div class="summary-item"><div class="summary-label">Total Entries</div><div class="summary-value" id="ls-entries" style="color:var(--blue);">0</div></div>
+        </div>
+        <div class="table-wrapper" id="ledger-table-wrapper">
+          <div class="empty-state">
+            <i data-lucide="book-open" class="empty-icon" style="width:48px;height:48px;color:var(--text-muted);"></i>
+            <div class="empty-title">Select a Company</div>
+            <div class="empty-sub">Choose a party from the dropdown to view their ledger</div>
+          </div>
+        </div>
+        <div id="ledger-modal-container"></div>
+      </div>
+
+      <!-- ══ PAGE: OUTSOURCING ══ -->
+      <div class="page" id="page-outsourcing">
+        <div class="page-header">
+          <h1 class="page-title">Third-Party Transport</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="window.outsourcingModule?.openAddModal()">+ Add Record</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="out-kpi-grid"></div>
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tab-outbound" onclick="window.outsourcingModule?.showTab('outbound')"><i data-lucide="arrow-up-right" class="icon-inline"></i> Outbound</button>
+          <button class="tab-btn" id="tab-inbound" onclick="window.outsourcingModule?.showTab('inbound')"><i data-lucide="arrow-down-left" class="icon-inline"></i> Inbound</button>
+        </div>
+        <div class="tab-panel active" id="out-tab-outbound"></div>
+        <div class="tab-panel" id="out-tab-inbound"></div>
+        <div id="outsourcing-modal-container"></div>
+      </div>
+
+
+      <!-- ══ PAGE: REPORTS ══ -->
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <h1 class="page-title">Reports & Analytics</h1>
+          <div class="page-actions">
+            <button class="btn btn-ghost btn-sm" onclick="window.reportsModule?.exportAll()">⬇ Export All</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="rep-kpi-grid"></div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="trending-up" class="icon-inline"></i> Monthly Revenue vs Expenses vs Profit</div>
+            <div class="chart-container" style="height:260px;"><canvas id="chart-rep-monthly"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="truck" class="icon-inline"></i> Truck Performance Comparison</div>
+            <div class="chart-container" style="height:260px;"><canvas id="chart-rep-trucks"></canvas></div>
+          </div>
+        </div>
+        <!-- Vehicle-wise Table -->
+        <div class="table-wrapper" style="margin-bottom:20px;">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="truck" class="icon-inline"></i> Vehicle-wise Summary</span>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Vehicle</th><th>Total Trips</th><th>Total Freight</th><th>Total Expenses</th><th>Net Profit</th><th>Profit Margin</th></tr></thead>
+              <tbody id="rep-vehicles-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="calendar-days" class="icon-inline"></i> Monthly Summary</span>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Month</th><th>Trips</th><th>Revenue</th><th>Expenses</th><th>Net Profit</th><th>Margin %</th></tr></thead>
+              <tbody id="rep-monthly-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: PENDING TRIPS ══ -->
+      <div class="page" id="page-pending-trips">
+        <div class="page-header">
+          <h1 class="page-title">Pending & Incomplete Work</h1>
+          <div class="page-actions">
+             <button class="btn btn-ghost btn-sm" onclick="window.pendingModule?.load()">Refresh List</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="pending-kpi-grid"></div>
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="clock" class="icon-inline"></i> Ongoing Trips</span>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="sort-wrap">
+                <span class="sort-label">Sort:</span>
+                <select class="form-control sort-select" id="pending-sort" onchange="window.pendingModule?.load()">
+                  <option value="trip_date-asc">Trip Date (Old→New)</option>
+                  <option value="trip_date-desc">Trip Date (New→Old)</option>
+                  <option value="freight_amount-desc">Price: High to Low</option>
+                  <option value="updated_at-desc">Recently Updated</option>
+                  <option value="created_at-desc">Recently Created</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table id="pending-trips-table">
+              <thead><tr><th>Date</th><th>Route</th><th>Vehicle</th><th>Driver</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="pending-trips-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: BILLING ══ -->
+      <div class="page" id="page-billing">
+        <div class="page-header">
+          <h1 class="page-title"><i data-lucide="file-text" class="icon-inline"></i> Bills & Invoices</h1>
+          <div class="page-actions" style="display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="navigate('trips')">+ New Bill (From Trips)</button>
+            <button class="btn btn-ghost" onclick="window.billingModule.openManualBillModal()">+ Create Manual Bill</button>
+          </div>
+        </div>
+        <div class="kpi-grid" id="billing-kpi-grid"></div>
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="file-text" class="icon-inline"></i> Recent Invoices</span>
+            <div class="search-input-wrap">
+              <i data-lucide="search" class="search-icon"></i>
+              <input class="search-input" id="billing-search" placeholder="Search bill no, party…" oninput="window.billingModule?.load()">
+            </div>
+            <div class="sort-wrap">
+              <span class="sort-label">Sort:</span>
+              <select class="form-control sort-select" id="billing-sort" onchange="window.billingModule?.load()">
+                <option value="trip_date-desc">Date (New→Old)</option>
+                <option value="trip_date-asc">Date (Old→New)</option>
+                <option value="freight_amount-desc">Price: High to Low</option>
+              </select>
+            </div>
+            <div id="billing-modal-container"></div>
+          </div>
+          <div class="table-scroll">
+            <table id="bills-table">
+              <thead><tr><th>Bill Date</th><th>Bill No</th><th>Company</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="bills-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ══ -->
+      <div class="page" id="page-settings">
+        <div class="page-header"><h1 class="page-title">Settings</h1></div>
+        <div class="card" style="max-width:500px; margin: 20px auto;">
+          <div class="card-header"><span class="card-title">Personalization</span></div>
+          <div class="form-group" style="padding:10px;">
+            <label class="form-label" style="margin-bottom:10px; display:block;">Select Theme</label>
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-secondary" style="flex:1;" onclick="setTheme('light')">🌞 Light Mode</button>
+              <button class="btn btn-ghost" style="flex:1;" onclick="setTheme('dark')">🌙 Dark Mode</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main><!-- /content-area -->
+  </div><!-- /main-area -->
+</div><!-- /app-root -->
+
+<div id="toast-container"></div>
+
+<script>
+require('dotenv').config();
+const path = require('path');
+const { getSession, logout, getDisplayUsername } = require('./js/auth');
+const { initRouter, registerPage, navigate } = require('./js/router');
+const { initFilters, onFilterChange } = require('./js/filters');
+
+const session = getSession();
+if (!session) {
+  window.location.href = path.join(__dirname, 'login.html');
+} else {
+  const username = getDisplayUsername(session);
+  const emailEl  = document.getElementById('topbar-user');
+  const avatarEl = document.getElementById('user-avatar');
+  if (emailEl)  emailEl.textContent  = username;
+  if (avatarEl) avatarEl.textContent = username.charAt(0).toUpperCase();
+  const { refreshIcons, closeModal } = require('./js/utils');
+  window.closeModal = closeModal;
+  initTheme();
+  boot();
+  refreshIcons();
+}
+
+function initTheme() {
+  const t = localStorage.getItem('tms_theme') || 'light';
+  setTheme(t);
+}
+
+function setTheme(t) {
+  if (t === 'dark') document.body.classList.add('theme-dark');
+  else document.body.classList.remove('theme-dark');
+  localStorage.setItem('tms_theme', t);
+}
+
+function boot() {
+  initRouter();
+  initFilters();
+
+  window.dashboardModule   = require('./js/dashboard');
+  window.tripsModule       = require('./js/trips');
+  window.expensesModule    = require('./js/expenses');
+  window.vehiclesModule    = require('./js/vehicles');
+  window.driversModule     = require('./js/drivers');
+  window.ledgerModule      = require('./js/ledger');
+  window.outsourcingModule = require('./js/outsourcing');
+  window.reportsModule     = require('./js/reports');
+  window.pendingModule     = require('./js/pending-trips');
+  window.billingModule     = require('./js/billing');
+
+  registerPage('dashboard',      { onEnter: () => window.dashboardModule.load() });
+  registerPage('trips',          { onEnter: () => window.tripsModule.load() });
+  registerPage('expenses',       { onEnter: () => window.expensesModule.load() });
+  registerPage('vehicles',       { onEnter: () => window.vehiclesModule.load() });
+  registerPage('drivers',        { onEnter: () => window.driversModule.load() });
+  registerPage('ledger',         { onEnter: () => window.ledgerModule.load() });
+  registerPage('outsourcing',    { onEnter: () => window.outsourcingModule.load() });
+  registerPage('reports',        { onEnter: () => window.reportsModule.load() });
+  registerPage('pending-trips', { onEnter: () => window.pendingModule.load() });
+  registerPage('billing',        { onEnter: () => window.billingModule.load() });
+  
+  // Register basic pages
+  ['settings'].forEach(id => {
+    registerPage(id, { onEnter: () => console.log(`Entered ${id}`) });
+  });
+
+  onFilterChange(() => {
+    const active = document.querySelector('.page.active');
+    if (!active) return;
+    const pageId = active.id.replace('page-', '');
+    if (window[pageId + 'Module']?.load) window[pageId + 'Module'].load();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    if (confirm('Are you sure you want to sign out?')) {
+      logout();
+      window.location.href = path.join(__dirname, 'login.html');
+    }
+  });
+
+  navigate('dashboard');
+}
+</script>
+</body>
+</html>

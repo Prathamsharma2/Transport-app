@@ -337,7 +337,7 @@
   <div class="lock-card">
     <div class="lock-icon">🔐</div>
     <h2>Developer Admin Panel</h2>
-    <p>Sirf developer ke liye — password daalein</p>
+    <p>Developer Access Only — Enter password</p>
     <input id="adminPwd" class="lock-input" type="password" placeholder="••••••••••" autocomplete="off">
     <button class="lock-btn" onclick="unlock()">Unlock Panel</button>
     <div id="lockError"></div>
@@ -383,9 +383,9 @@
       <div class="page-title">Send Update to All Clients</div>
 
       <div class="card">
-        <div class="card-title">🚀 Naya Update Bhejo</div>
+        <div class="card-title">🚀 Send New Update</div>
         <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">
-          Yeh update Hostinger MySQL mein save hoga. Jab bhi koi client app kholega — usse notification aayegi automatically.
+          This update will be saved to the database. Clients will receive an automatic notification when they open the app.
         </p>
         <div style="display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-bottom:14px;">
           <div>
@@ -393,8 +393,8 @@
             <input id="upVersion" placeholder="e.g. 1.0.2" />
           </div>
           <div>
-            <label>Update Message (Client ko dikhega)</label>
-            <input id="upMessage" placeholder="e.g. Bug fix: login issue theek kiya, performance improve ki" />
+            <label>Update Message (Shown to Client)</label>
+            <input id="upMessage" placeholder="e.g. Bug fixes and performance improvements" />
           </div>
           <div style="grid-column:1/-1;">
             <label>Download Link (Optional)</label>
@@ -402,18 +402,18 @@
           </div>
         </div>
         <button class="btn btn-primary btn-full" onclick="sendUpdate()">
-          🚀 Sab Clients Ko Update Notification Bhejo
+          🚀 Send Update Notification to All Clients
         </button>
       </div>
 
       <div class="card" style="border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05);">
-        <div class="card-title">ℹ️ Kaise kaam karta hai?</div>
+        <div class="card-title">ℹ️ How it works?</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.8;">
-          1. <strong style="color:var(--text);">Version</strong> mein naya number daalo (current app version 1.0.1 se alag hona chahiye)<br>
-          2. <strong style="color:var(--text);">Message</strong> mein likho kya badla — clients ko yahi dikhega<br>
-          3. <strong style="color:var(--text);">Download Link</strong> optional hai — agar naya .exe/.dmg share karna ho to<br>
-          4. <strong style="color:var(--text);">Send karo</strong> — Hostinger MySQL mein record jayega<br>
-          5. Client jab app kholega — <strong style="color:#a78bfa;">purple banner</strong> screen ke upar aayega
+          1. <strong style="color:var(--text);">Version</strong>: Enter a new number (must be different from the current version)<br>
+          2. <strong style="color:var(--text);">Message</strong>: Describe the changes — clients will see this message<br>
+          3. <strong style="color:var(--text);">Download Link</strong>: Optional — for sharing new .exe/.dmg files<br>
+          4. <strong style="color:var(--text);">Send</strong>: Update record will be saved to the database<br>
+          5. <strong style="color:var(--text);">Result</strong>: A banner will appear at the top of the client's screen on startup
         </div>
       </div>
     </div>
@@ -422,7 +422,7 @@
     <div class="page" id="page-users">
       <div class="page-title">Manage Users</div>
       <div class="card">
-        <div class="card-title">➕ Naya User Banao</div>
+        <div class="card-title">➕ Create New User</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 120px auto;gap:12px;align-items:end;">
           <div>
             <label>Username</label>
@@ -461,7 +461,7 @@
     <div class="page" id="page-history">
       <div class="page-title">Update History</div>
       <div class="card">
-        <div class="card-title">📋 Pichle Sab Updates</div>
+        <div class="card-title">📋 Previous Updates</div>
         <div id="historyList" style="color:var(--muted);font-size:13px;">Loading...</div>
       </div>
     </div>
@@ -526,11 +526,11 @@ function sendUpdate() {
   const version = document.getElementById('upVersion').value.trim();
   const message = document.getElementById('upMessage').value.trim();
   const url     = document.getElementById('upUrl').value.trim();
-  if (!version || !message) { toast('Version aur message required hai!', true); return; }
+  if (!version || !message) { toast('Version and message are required!', true); return; }
 
   db.pushUpdate(version, message, url, (err) => {
     if (err) { toast('Error: ' + err.message, true); return; }
-    toast('✅ Update sent! Sab clients ko notification aayegi.');
+    toast('✅ Update sent! All clients will be notified.');
     document.getElementById('upVersion').value = '';
     document.getElementById('upMessage').value = '';
     document.getElementById('upUrl').value = '';
@@ -543,7 +543,7 @@ function loadUsers() {
   db.getUsers((rows) => {
     const tbody = document.getElementById('usersTable');
     if (!rows || rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px;">Koi user nahi hai</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px;">No users found</td></tr>';
       return;
     }
     tbody.innerHTML = rows.map(r => `
@@ -561,10 +561,10 @@ function createUserAdmin() {
   const u = document.getElementById('newUname').value.trim();
   const p = document.getElementById('newPwd').value.trim();
   const r = document.getElementById('newRole').value;
-  if (!u || !p) { toast('Username aur password chahiye', true); return; }
+  if (!u || !p) { toast('Username and password are required', true); return; }
   db.createUser(u, p, r, (err) => {
     if (err) { toast('Error: ' + err.message, true); return; }
-    toast('✅ User banaya: ' + u);
+    toast('✅ User created: ' + u);
     document.getElementById('newUname').value = '';
     document.getElementById('newPwd').value = '';
     loadUsers();
@@ -572,10 +572,10 @@ function createUserAdmin() {
 }
 
 function deleteUserAdmin(id) {
-  if (!confirm('Is user ko delete karna chahte ho?')) return;
+  if (!confirm('Are you sure you want to delete this user?')) return;
   db.deleteUser(id, (err) => {
     if (err) { toast('Error: ' + err.message, true); return; }
-    toast('User delete ho gaya');
+    toast('User deleted successfully');
     loadUsers();
   });
 }
@@ -595,7 +595,7 @@ function loadHistory() {
   pool.then(p =>
     p.query('SELECT * FROM app_updates ORDER BY released_at DESC LIMIT 20')
   ).then(([rows]) => {
-    if (!rows.length) { list.innerHTML = '<p style="color:var(--muted)">Abhi tak koi update nahi bheja</p>'; return; }
+    if (!rows.length) { list.innerHTML = '<p style="color:var(--muted)">No updates sent yet</p>'; return; }
     list.innerHTML = rows.map(r => `
       <div class="history-item">
         <div class="history-dot"></div>
