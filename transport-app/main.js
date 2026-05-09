@@ -261,8 +261,7 @@ app.whenReady().then(() => {
     // Delay first check slightly so UI has time to show
     setTimeout(() => {
       try {
-        // Use checkForUpdates() — NOT checkForUpdatesAndNotify()
-        // checkForUpdatesAndNotify shows native OS dialog which conflicts with our UI
+        // Use checkForUpdates() so our custom UI handles the notification
         autoUpdater.checkForUpdates();
       } catch (e) {
         console.error('autoUpdater.checkForUpdates failed:', e);
