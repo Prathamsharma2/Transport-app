@@ -126,7 +126,36 @@ ipcMain.on('download-update', (event, { url, filename }) => {
 ipcMain.on('install-update', (event, filePath) => {
   // Open installer (DMG on Mac, EXE on Windows)
   shell.openPath(filePath);
-  setTimeout(() => { app.exit(0); }, 1000); // Forces the app to close immediately
+  setTimeout(() => { app.exit(0); }, 1000);
+});
+
+// ── Restart & Install (called by our custom UI button) ──
+ipcMain.on('restart-and-install', () => {
+  console.log('[Main] restart-and-install requested');
+  app.isUpdating = true;
+
+  // Remove window-all-closed so app doesn't quit before installer runs
+  app.removeAllListeners('window-all-closed');
+
+  // Force-destroy every window to release file locks
+  BrowserWindow.getAllWindows().forEach(w => {
+    try {
+      w.removeAllListeners('close');
+      w.setClosable(true);
+      w.destroy();
+    } catch (e) { /* ignore */ }
+  });
+
+  // Give Windows 1.5s to release file handles, then launch installer
+  setTimeout(() => {
+    try {
+      autoUpdater.quitAndInstall(true, true);
+    } catch (e) {
+      console.error('quitAndInstall failed, force exiting:', e);
+    }
+    // Last-resort: force exit after another second
+    setTimeout(() => app.exit(0), 1000);
+  }, 1500);
 });
 
 function openAdminPanel() {
@@ -223,30 +252,20 @@ app.whenReady().then(() => {
 
     autoUpdater.on('update-downloaded', (info) => {
       console.log('AutoUpdater: update downloaded', info);
-      // Prompt user to install now
-      const result = dialog.showMessageBoxSync(mainWindow, {
-        type: 'question',
-        buttons: ['Install and Relaunch', 'Later'],
-        defaultId: 0,
-        message: 'Update ready to install',
-        detail: 'A new version has been downloaded. Install and relaunch now?'
-      });
-      if (result === 0) {
-        // quit and install
-        try {
-          autoUpdater.quitAndInstall(false, true);
-        } catch (e) {
-          console.error('Failed to quit and install update', e);
-        }
+      // Send to our CUSTOM renderer UI — do NOT use native dialog
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('update-downloaded', info);
       }
     });
 
     // Delay first check slightly so UI has time to show
     setTimeout(() => {
       try {
-        autoUpdater.checkForUpdatesAndNotify();
+        // Use checkForUpdates() — NOT checkForUpdatesAndNotify()
+        // checkForUpdatesAndNotify shows native OS dialog which conflicts with our UI
+        autoUpdater.checkForUpdates();
       } catch (e) {
-        console.error('autoUpdater.checkForUpdatesAndNotify failed', e);
+        console.error('autoUpdater.checkForUpdates failed:', e);
       }
     }, 5000);
   }
