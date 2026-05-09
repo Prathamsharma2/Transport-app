@@ -1,40 +1,26 @@
-const { app, BrowserWindow } = require('electron');
-const { spawn } = require('child_process');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
-const tcpPortUsed = require('tcp-port-used');
+const { autoUpdater } = require('electron-updater');
 
 let mainWindow;
-let pyProc = null;
 
-const createPyProc = () => {
-  let script = path.join(__dirname, '..', 'backend', 'venv', 'bin', 'uvicorn');
-  
-  pyProc = spawn(script, ['main:app', '--port', '8000'], {
-    cwd: path.join(__dirname, '..', 'backend')
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
   });
 
-  if (pyProc != null) {
-    console.log('FastAPI server spawned on port 8000');
-  }
+  app.on('ready', () => {
+    createWindow();
+  });
 }
 
-const exitPyProc = () => {
-  if (pyProc) {
-    pyProc.kill();
-    pyProc = null;
-  }
-}
-
-app.on('ready', async () => {
-  createPyProc();
-
-  // Wait for FastAPI to bind safely
-  try {
-    await tcpPortUsed.waitUntilUsed(8000, 500, 10000);
-  } catch (err) {
-    console.error('Error waiting for FastAPI:', err);
-  }
-
+function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 850,
@@ -46,13 +32,16 @@ app.on('ready', async () => {
     }
   });
 
-  const startUrl = process.env.ELECTRON_START_URL || 'http://localhost:5173';
-  mainWindow.loadURL(startUrl);
+  mainWindow.loadFile(path.join(__dirname, '..', 'renderer', 'login.html'));
+
+  mainWindow.once('ready-to-show', () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-});
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -60,4 +49,8 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('will-quit', exitPyProc);
+autoUpdater.on('update-downloaded', () => {
+  setTimeout(() => {
+    autoUpdater.quitAndInstall(false, true);
+  }, 1000);
+});

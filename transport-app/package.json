@@ -1,6 +1,6 @@
 {
   "name": "transport-app",
-  "version": "2.4.6",
+  "version": "2.3.9",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -62,9 +62,11 @@
     },
     "nsis": {
       "oneClick": false,
+      "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false,
-      "runAfterFinish": true
+      "runAfterFinish": true,
+      "include": "build/installer.nsh"
     },
     "publish": [
       {

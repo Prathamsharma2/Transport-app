@@ -4,10 +4,16 @@
 const navConfig = [
   { id: 'dashboard',    label: 'Dashboard',       icon: 'layout-dashboard' },
   
-  { category: 'People', items: [
-    { id: 'ledger',      label: 'Company Ledger',     icon: 'users' },
-    { id: 'outsourcing', label: 'Suppliers (Outsource)', icon: 'truck' },
+  { category: 'Broker Management', items: [
+    { id: 'broker-dashboard', label: 'Broker Dashboard', icon: 'layout-dashboard' },
+    { id: 'ledger',      label: 'Broker Company Ledger', icon: 'users' },
+    { id: 'outsourcing', label: 'Broker Suppliers (Outsource)', icon: 'truck' },
+    { id: 'expenses',    label: 'Broker Expense Manager', icon: 'banknote' },
+  ]},
+
+  { category: 'People & Fleet', items: [
     { id: 'drivers',     label: 'Drivers',            icon: 'user-square' },
+    { id: 'vehicles',    label: 'Vehicles',           icon: 'truck' },
   ]},
 
   { category: 'Bookings', items: [
@@ -17,12 +23,6 @@ const navConfig = [
 
   { category: 'Financials', items: [
     { id: 'billing',     label: 'Bills & Invoices',   icon: 'file-text' },
-    { id: 'expenses',    label: 'Expense Manager',    icon: 'banknote' },
-  ]},
-
-
-  { category: 'Vehicles', items: [
-    { id: 'vehicles',    label: 'Vehicles',           icon: 'truck' },
   ]},
 
   { category: 'Misc', items: [

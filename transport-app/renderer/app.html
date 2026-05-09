@@ -32,7 +32,7 @@
         <i data-lucide="log-out" class="nav-icon"></i> Sign Out
       </div>
       <div style="padding: 10px 20px; font-size: 10px; color: var(--text-muted); opacity: 0.7;">
-        TMS v<span id="sidebar-version">2.4.6</span>
+        TMS v<span id="sidebar-version">2.3.9</span>
       </div>
     </div>
   </aside>
@@ -101,7 +101,75 @@
       </div>
 
 
-      <!-- ══ PAGE: TRIPS ══ -->
+      <!-- ══ PAGE: BROKER DASHBOARD ══ -->
+      <div class="page" id="page-broker-dashboard">
+        <div class="page-header">
+          <h1 class="page-title">Broker Analytics Dashboard</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="navigate('outsourcing')">+ New Outsourced Trip</button>
+          </div>
+        </div>
+        
+        <!-- Broker KPI Grid -->
+        <div class="kpi-grid" id="broker-dash-kpi">
+           <div class="kpi-card" style="--kpi-color:var(--accent);">
+             <span class="kpi-icon"><i data-lucide="truck" class="icon-inline"></i></span>
+             <div class="kpi-label">Outsourced Trips</div>
+             <div class="kpi-value" id="bd-total-trips">0</div>
+             <div class="kpi-sub">Total records</div>
+           </div>
+           <div class="kpi-card" style="--kpi-color:var(--green);">
+             <span class="kpi-icon">₹</span>
+             <div class="kpi-label">Broker Revenue</div>
+             <div class="kpi-value" id="bd-revenue">₹0</div>
+             <div class="kpi-sub">Total Received</div>
+           </div>
+           <div class="kpi-card" style="--kpi-color:var(--red);">
+             <span class="kpi-icon">₹</span>
+             <div class="kpi-label">Broker Payouts</div>
+             <div class="kpi-value" id="bd-payouts">₹0</div>
+             <div class="kpi-sub">Paid to Transporters</div>
+           </div>
+           <div class="kpi-card" style="--kpi-color:var(--yellow);">
+             <span class="kpi-icon"><i data-lucide="banknote" class="icon-inline"></i></span>
+             <div class="kpi-label">Broker Expenses</div>
+             <div class="kpi-value" id="bd-expenses">₹0</div>
+             <div class="kpi-sub">Indirect Costs</div>
+           </div>
+           <div class="kpi-card" style="--kpi-color:var(--purple);">
+             <span class="kpi-icon"><i data-lucide="trending-up" class="icon-inline"></i></span>
+             <div class="kpi-label">Net Broker Profit</div>
+             <div class="kpi-value" id="bd-profit">₹0</div>
+             <div class="kpi-sub" id="bd-margin">Margin: 0%</div>
+           </div>
+        </div>
+
+        <!-- Broker Charts -->
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="bar-chart-2" class="icon-inline"></i> Top Transporters (by Payout)</div>
+            <div class="chart-container" style="height:250px;"><canvas id="chart-broker-transporters"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><i data-lucide="pie-chart" class="icon-inline"></i> Outbound vs Inbound Share</div>
+            <div class="chart-container" style="height:250px;"><canvas id="chart-broker-direction"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Recent Outsourced Activity -->
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <span class="table-toolbar-title"><i data-lucide="history" class="icon-inline"></i> Recent Broker Activity</span>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('outsourcing')">Manage All →</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Date</th><th>Client / Transporter</th><th>Route</th><th>Received</th><th>Paid</th><th>Margin</th></tr></thead>
+              <tbody id="broker-dash-recent-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <div class="page" id="page-trips">
         <!-- Create Trip Form (always visible at top) -->
         <div id="trips-form-view" style="margin-bottom:24px;">
@@ -196,7 +264,7 @@
       <!-- ══ PAGE: EXPENSES ══ -->
       <div class="page" id="page-expenses">
         <div class="page-header">
-          <h1 class="page-title">Expense Manager</h1>
+          <h1 class="page-title">Broker Expense Manager</h1>
           <div class="page-actions">
             <button class="btn btn-primary" onclick="window.expensesModule?.openAddModal()">+ Add Expense</button>
           </div>
@@ -288,7 +356,7 @@
       <!-- ══ PAGE: LEDGER ══ -->
       <div class="page" id="page-ledger">
         <div class="page-header">
-          <h1 class="page-title">Company Ledger</h1>
+          <h1 class="page-title">Broker Company Ledger</h1>
           <div class="page-actions">
             <select class="form-control" id="ledger-company-select" style="width:220px;" onchange="window.ledgerModule?.loadCompany(this.value)">
               <option value="">Select Company…</option>
@@ -326,7 +394,7 @@
       <!-- ══ PAGE: OUTSOURCING ══ -->
       <div class="page" id="page-outsourcing">
         <div class="page-header">
-          <h1 class="page-title">Third-Party Transport</h1>
+          <h1 class="page-title">Broker Suppliers (Outsource)</h1>
           <div class="page-actions">
             <button class="btn btn-primary" onclick="window.outsourcingModule?.openAddModal()">+ Add Record</button>
           </div>
@@ -524,6 +592,7 @@ function boot() {
   window.reportsModule     = require('./js/reports');
   window.pendingModule     = require('./js/pending-trips');
   window.billingModule     = require('./js/billing');
+  window.brokerDashboardModule = require('./js/broker-dashboard');
 
   registerPage('dashboard',      { onEnter: () => window.dashboardModule.load() });
   registerPage('trips',          { onEnter: () => window.tripsModule.load() });
@@ -535,6 +604,7 @@ function boot() {
   registerPage('reports',        { onEnter: () => window.reportsModule.load() });
   registerPage('pending-trips', { onEnter: () => window.pendingModule.load() });
   registerPage('billing',        { onEnter: () => window.billingModule.load() });
+  registerPage('broker-dashboard', { onEnter: () => window.brokerDashboardModule.load() });
   
   // Register basic pages
   ['settings'].forEach(id => {
@@ -557,6 +627,61 @@ function boot() {
 
   navigate('dashboard');
 }
+
+// ── Auto-Update Notification ──
+(function setupAutoUpdater() {
+  let ipc;
+  try { ipc = require('electron').ipcRenderer; } catch(e) { return; }
+
+  // Create update banner (hidden by default)
+  const banner = document.createElement('div');
+  banner.id = 'update-banner';
+  banner.style.cssText = `
+    display:none; position:fixed; bottom:24px; right:24px; z-index:99999;
+    background:linear-gradient(135deg,#1e293b,#0f172a); color:#f1f5f9;
+    border:1px solid #334155; border-radius:14px; padding:16px 20px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5); min-width:300px;
+    font-family:inherit; animation:slideUp 0.3s ease;
+  `;
+  banner.innerHTML = `
+    <style>
+      @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+      #update-banner .upd-title { font-size:14px; font-weight:700; color:#38bdf8; margin-bottom:4px; }
+      #update-banner .upd-sub   { font-size:12px; color:#94a3b8; margin-bottom:14px; }
+      #update-banner .upd-btns  { display:flex; gap:8px; }
+      #update-banner .btn-restart { background:#38bdf8; color:#0f172a; border:none; border-radius:8px; padding:8px 16px; font-weight:700; font-size:13px; cursor:pointer; flex:1; }
+      #update-banner .btn-restart:hover { background:#7dd3fc; }
+      #update-banner .btn-later  { background:transparent; color:#64748b; border:1px solid #334155; border-radius:8px; padding:8px 12px; font-size:12px; cursor:pointer; }
+      #update-banner .btn-later:hover  { color:#94a3b8; }
+    </style>
+    <div class="upd-title">🚀 Update Ready to Install</div>
+    <div class="upd-sub" id="upd-version-text">A new version has been downloaded.</div>
+    <div class="upd-btns">
+      <button class="btn-restart" id="btn-restart-now">Restart & Install</button>
+      <button class="btn-later"   id="btn-upd-later">Later</button>
+    </div>
+  `;
+  document.body.appendChild(banner);
+
+  // Show banner when update is downloaded
+  ipc.on('update-downloaded', (event, info) => {
+    const vEl = document.getElementById('upd-version-text');
+    if (vEl && info && info.version) vEl.textContent = `Version ${info.version} is ready. Restart to apply.`;
+    banner.style.display = 'block';
+  });
+
+  // Restart & Install button
+  document.getElementById('btn-restart-now').addEventListener('click', () => {
+    document.getElementById('btn-restart-now').textContent = 'Closing app…';
+    document.getElementById('btn-restart-now').disabled = true;
+    ipc.send('restart-and-install');
+  });
+
+  // Later — hide banner
+  document.getElementById('btn-upd-later').addEventListener('click', () => {
+    banner.style.display = 'none';
+  });
+})();
 </script>
 </body>
 </html>

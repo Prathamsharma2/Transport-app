@@ -92,8 +92,8 @@ async function loadTab(direction) {
       return `<tr>
         <td class="td-primary">${from+i+1}</td>
         <td>${formatDate(r.trip_date)}</td>
-        <td class="td-primary">${direction==='outbound' ? (r.client_name || '—') : (r.transporter_name || '—')}</td>
-        <td>${direction==='outbound' ? (r.transporter_name || '—') : (r.client_name || '—')}</td>
+        <td class="td-primary">${direction==='outbound' ? (r.broker_name || '—') : (r.transporter_name || '—')}</td>
+        <td>${direction==='outbound' ? (r.transporter_name || '—') : (r.broker_name || '—')}</td>
         <td>${r.from_location || ''}${r.to_location ? ' → ' + r.to_location : ''}</td>
         <td class="td-amount" style="color:var(--green);">${formatCurrency(r.freight_received)}</td>
         <td class="td-amount" style="color:var(--red);">${formatCurrency(r.freight_paid)}</td>
@@ -102,7 +102,7 @@ async function loadTab(direction) {
         <td>
           <div style="display:flex;gap:6px;">
             <button class="btn btn-ghost btn-xs" onclick="window.outsourcingModule.openEditModal(${r.id})"><i data-lucide="edit-2" class="icon-inline" style="width:14px;height:14px;"></i></button>
-            <button class="btn btn-ghost btn-xs" style="color:var(--red);" onclick="window.outsourcingModule.openOutsourcedExpenseModal(${r.id}, '${direction==='outbound' ? r.client_name : r.transporter_name}')"><i data-lucide="banknote" class="icon-inline" style="width:14px;height:14px;"></i> Exp.</button>
+            <button class="btn btn-ghost btn-xs" style="color:var(--red);" onclick="window.outsourcingModule.openOutsourcedExpenseModal(${r.id}, '${direction==='outbound' ? (r.broker_name || '') : (r.transporter_name || '')}')"><i data-lucide="banknote" class="icon-inline" style="width:14px;height:14px;"></i> Exp.</button>
             <button class="btn btn-danger btn-xs" onclick="window.outsourcingModule.deleteRecord(${r.id})"><i data-lucide="trash-2" class="icon-inline" style="width:14px;height:14px;"></i></button>
           </div>
         </td>
@@ -203,7 +203,7 @@ async function prefillRecord(id) {
   if (!data) return;
   document.getElementById('ot-dir').value         = data.direction || 'outbound';
   document.getElementById('ot-date').value        = data.trip_date || todayISO();
-  document.getElementById('ot-client').value      = data.client_name || '';
+  document.getElementById('ot-client').value      = data.broker_name || '';
   document.getElementById('ot-transporter').value = data.transporter_name || '';
   document.getElementById('ot-from').value        = data.from_location || '';
   document.getElementById('ot-to').value          = data.to_location   || '';
@@ -218,7 +218,7 @@ async function saveRecord(editId) {
   const payload = {
     direction:         document.getElementById('ot-dir').value,
     trip_date:         document.getElementById('ot-date').value,
-    client_name:       document.getElementById('ot-client').value.trim(),
+    broker_name:       document.getElementById('ot-client').value.trim(),
     transporter_name:  document.getElementById('ot-transporter').value.trim(),
     from_location:     document.getElementById('ot-from').value.trim(),
     to_location:       document.getElementById('ot-to').value.trim(),
@@ -242,7 +242,7 @@ async function saveRecord(editId) {
           trip_date: payload.trip_date,
           start_location: payload.from_location,
           end_location: payload.to_location,
-          consignor: payload.client_name,
+          consignor: payload.broker_name,
           consignee: payload.transporter_name, // Treat transporter as consignee to track who took it
           freight_amount: payload.freight_received,
           advance_payment: payload.freight_paid, // Represents what was paid out to transporter
